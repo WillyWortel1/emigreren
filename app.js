@@ -569,6 +569,8 @@
       state = defaultState();
       render();
     };
+    const reload = document.getElementById("reload-app");
+    if (reload) reload.onclick = () => location.reload();
   }
 
   render();

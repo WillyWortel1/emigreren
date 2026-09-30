@@ -156,9 +156,23 @@ nav.tabs button.active {
   color: var(--fg);
   background: var(--surface-2);
 }
-nav.tabs .tab-reset {
+nav.tabs .tab-actions {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+nav.tabs .tab-reset {
   font-weight: 700;
+  color: var(--fg);
+}
+nav.tabs .tab-icon {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: var(--fg);
 }
 
