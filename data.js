@@ -384,7 +384,6 @@ window.EMIGREER_DATA = {
       cat: "praktisch",
       title: "Auto: uitvoer bij RDW of schorsen / overschrijven",
       why: "Meenemen: uitvoer bij RDW vóór inschrijving in het nieuwe land, check BPM-teruggaaf. Achterlaten: schorsen of overschrijven.",
-      flags: ["auto"],
       links: [
         { label: "Voertuig exporteren — RDW", href: "https://www.rdw.nl/invoeren-exporteren-doorvoeren/voertuig-exporteren" },
         { label: "BPM-teruggaaf export", href: "https://www.belastingdienst.nl/wps/wcm/connect/nl/bpm/content/teruggaaf-bpm-export-gebruikt-motorrijtuig" },
@@ -396,7 +395,6 @@ window.EMIGREER_DATA = {
       cat: "praktisch",
       title: "Camper: uitvoer bij RDW of schorsen / overschrijven",
       why: "Een camper is een motorrijtuig. Meenemen: RDW-uitvoer vóór lokale inschrijving, BPM-teruggaaf checken. Achterlaten: schorsen of op naam van een ander.",
-      flags: ["camper"],
       links: [
         { label: "Voertuig exporteren — RDW", href: "https://www.rdw.nl/invoeren-exporteren-doorvoeren/voertuig-exporteren" },
         { label: "BPM-teruggaaf export", href: "https://www.belastingdienst.nl/wps/wcm/connect/nl/bpm/content/teruggaaf-bpm-export-gebruikt-motorrijtuig" },
@@ -408,7 +406,6 @@ window.EMIGREER_DATA = {
       cat: "praktisch",
       title: "Caravan: RDW-kenteken, verzekering en stalling",
       why: "Heeft de caravan een NL-kenteken: uitvoer, schorsen of overschrijven bij de RDW. Geen kenteken: eigendomsbewijs, verzekering en stallingcontract opzeggen of meenemen. Check of het nieuwe land een aanhanger apart inschrijft.",
-      flags: ["caravan"],
       links: [
         { label: "Voertuig exporteren — RDW", href: "https://www.rdw.nl/invoeren-exporteren-doorvoeren/voertuig-exporteren" },
       ],
@@ -419,7 +416,6 @@ window.EMIGREER_DATA = {
       cat: "praktisch",
       title: "Boot: RDW-registratie, ligplaats en uitvoer",
       why: "Een snelle RIB met registratienummer staat bij de RDW als (klein) pleziervaartuig. Meenemen: uitvoer of wijziging van de registratie vóór lokale inschrijving, plus casco/WA. Achterlaten: registratie wijzigen of beëindigen. Ligplaats- of stallingcontract opzeggen. Trailer met kenteken apart via de RDW. Uitvoer uit de EU: BTW-status meenemen.",
-      flags: ["boot"],
       links: [
         { label: "RDW — vaartuig registreren", href: "https://www.rdw.nl/vaartuig/kopen-en-verkopen/vaartuig-registreren" },
         { label: "RDW — registratie aanpassen of stoppen", href: "https://www.rdw.nl/vaartuig/registratie-aanpassen" },
@@ -431,7 +427,6 @@ window.EMIGREER_DATA = {
       cat: "praktisch",
       title: "Trailer: uitvoer bij RDW of schorsen / overschrijven",
       why: "Een boottrailer heeft een eigen kenteken, los van de RIB. Meenemen: RDW-uitvoer vóór inschrijving in het nieuwe land. Achterlaten: schorsen of overschrijven. Check verzekering en APK-plicht.",
-      flags: ["trailer"],
       links: [
         { label: "Voertuig exporteren — RDW", href: "https://www.rdw.nl/invoeren-exporteren-doorvoeren/voertuig-exporteren" },
       ],
@@ -548,21 +543,18 @@ window.EMIGREER_DATA = {
       phase: "aankomst",
       cat: "praktisch",
       title: "Auto lokaal inschrijven na RDW-uitvoer",
-      flags: ["auto"],
     },
     {
       id: "camper-inschrijven",
       phase: "aankomst",
       cat: "praktisch",
       title: "Camper lokaal inschrijven na RDW-uitvoer",
-      flags: ["camper"],
     },
     {
       id: "caravan-inschrijven",
       phase: "aankomst",
       cat: "praktisch",
       title: "Caravan ter plaatse stallen of inschrijven",
-      flags: ["caravan"],
     },
     {
       id: "boot-ligplaats",
@@ -570,14 +562,12 @@ window.EMIGREER_DATA = {
       cat: "praktisch",
       title: "Boot: lokale registratie of RDW-status afronden, ligplaats regelen",
       why: "Na RDW-uitvoer inschrijven of melden in het nieuwe land als dat verplicht is. Ligplaats vastleggen. Bewaar het oude registratienummer en de uitvoerbevestiging.",
-      flags: ["boot"],
     },
     {
       id: "trailer-inschrijven",
       phase: "aankomst",
       cat: "praktisch",
       title: "Trailer lokaal inschrijven na RDW-uitvoer",
-      flags: ["trailer"],
     },
 
     /* —— Eerste jaar —— */
