@@ -1300,9 +1300,10 @@ Met vriendelijke groet,
     const days = daysUntil();
     const daysTxt =
       days == null ? "Nog geen vertrekdatum" : days > 0 ? `${days} dagen tot vertrek` : days === 0 ? "Vandaag vertrek" : `${Math.abs(days)} dagen onderweg`;
-    $(".progress-label").textContent = `${p.done} van ${p.total} taken · ${p.pct}%`;
-    $(".progress-days").textContent = `${dest().name} · ${daysTxt}`;
-    $(".progress-bar span").style.width = p.pct + "%";
+    $("#progress-label").textContent = `${p.done} van ${p.total} taken · ${p.pct}%`;
+    $("#progress-days").textContent = `${dest().name} · ${daysTxt}`;
+    const bar = $(".progress-bar span");
+    if (bar) bar.style.width = p.pct + "%";
     $$("nav.tabs button").forEach((b) => b.classList.toggle("active", b.dataset.tab === state.tab));
   }
 
@@ -1583,14 +1584,21 @@ Met vriendelijke groet,
   }
 
   function render() {
-    renderHeader();
-    const root = $("#view");
-    if (state.tab === "plan") root.innerHTML = renderPlan();
-    if (state.tab === "lijst") root.innerHTML = renderList();
-    if (state.tab === "fiscaal") root.innerHTML = renderFiscal();
-    if (state.tab === "mail") root.innerHTML = renderMail();
-    if (state.tab === "info") root.innerHTML = renderInfo();
-    bind();
+    try {
+      renderHeader();
+      const root = $("#view");
+      if (!root) return;
+      if (state.tab === "plan") root.innerHTML = renderPlan();
+      if (state.tab === "lijst") root.innerHTML = renderList();
+      if (state.tab === "fiscaal") root.innerHTML = renderFiscal();
+      if (state.tab === "mail") root.innerHTML = renderMail();
+      if (state.tab === "info") root.innerHTML = renderInfo();
+      bind();
+    } catch (err) {
+      const root = $("#view");
+      if (root) root.innerHTML = `<article class="card"><h2>Er ging iets mis</h2><p class="muted">${String(err)}</p></article>`;
+      console.error(err);
+    }
   }
 
   function bind() {
