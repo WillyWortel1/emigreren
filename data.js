@@ -426,6 +426,17 @@ window.EMIGREER_DATA = {
       ],
     },
     {
+      id: "trailer-export",
+      phase: "afronden",
+      cat: "praktisch",
+      title: "Trailer: uitvoer bij RDW of schorsen / overschrijven",
+      why: "Een boottrailer heeft een eigen kenteken, los van de RIB. Meenemen: RDW-uitvoer vóór inschrijving in het nieuwe land. Achterlaten: schorsen of overschrijven. Check verzekering en APK-plicht.",
+      flags: ["trailer"],
+      links: [
+        { label: "Voertuig exporteren — RDW", href: "https://www.rdw.nl/invoeren-exporteren-doorvoeren/voertuig-exporteren" },
+      ],
+    },
+    {
       id: "vve",
       phase: "afronden",
       cat: "administratief",
@@ -560,6 +571,13 @@ window.EMIGREER_DATA = {
       title: "Boot: lokale registratie of RDW-status afronden, ligplaats regelen",
       why: "Na RDW-uitvoer inschrijven of melden in het nieuwe land als dat verplicht is. Ligplaats vastleggen. Bewaar het oude registratienummer en de uitvoerbevestiging.",
       flags: ["boot"],
+    },
+    {
+      id: "trailer-inschrijven",
+      phase: "aankomst",
+      cat: "praktisch",
+      title: "Trailer lokaal inschrijven na RDW-uitvoer",
+      flags: ["trailer"],
     },
 
     /* —— Eerste jaar —— */

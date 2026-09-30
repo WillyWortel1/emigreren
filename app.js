@@ -19,7 +19,7 @@
       klantnummer: "",
       ean: "",
       unit: "",
-      flags: { woning: false, auto: false, camper: false, caravan: false, boot: false, huisdier: false, uitkering: false, vermogen: false, ab: false, pensioen: false, crypto: false },
+      flags: { woning: false, auto: false, camper: false, caravan: false, boot: false, trailer: false, huisdier: false, uitkering: false, vermogen: false, ab: false, pensioen: false, crypto: false },
     },
     done: {},
     notes: "",
@@ -205,6 +205,7 @@
           ${flag("camper", "Camper")}
           ${flag("caravan", "Caravan")}
           ${flag("boot", "Boot")}
+          ${flag("trailer", "Trailer")}
           ${flag("huisdier", "Huisdier")}
           ${flag("uitkering", "Uitkering uit NL")}
           ${flag("pensioen", "NL-pensioen of lijfrente")}
