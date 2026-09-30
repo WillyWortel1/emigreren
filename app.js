@@ -292,9 +292,6 @@
         : riskN >= 2
           ? "Gemengd beeld. Documenteer het nieuwe tehuis (huur/koop, arts, bank, tijd ter plaatse) en wees zuinig met een altijd-klare NL-woning."
           : "Weinig aanknopingspunten aangevinkt. Dat is geen vrijbrief: de inspecteur kijkt naar het geheel, inclusief wat je níet aanvinkt.";
-    const saleNote = state.ties["woning-tekoop"]
-      ? `<div class="callout"><strong>Woning te koop</strong>Een bord in de tuin beëindigt de duurzame band niet. Relevant is of de woning nog tot je beschikking staat. Leeghalen, sleutel bij de makelaar, niet meer overnachten en een echte verkoopopdracht maken het argument sterker — de inspecteur kijkt naar feiten, niet naar de advertentie.</div>`
-      : "";
 
     const destId = dest().id;
     const hrBlock =
@@ -348,12 +345,11 @@
           ${ties
             .map(
               (t) =>
-                `<label><input type="checkbox" data-tie="${t.id}" ${state.ties[t.id] ? "checked" : ""}><span>${t.label}${t.hint ? `<span class="tiny" style="display:block;font-weight:400;margin-top:4px">${t.hint}</span>` : ""}</span></label>`
+                `<label><input type="checkbox" data-tie="${t.id}" ${state.ties[t.id] ? "checked" : ""}><span>${t.label}</span></label>`
             )
             .join("")}
         </div>
         <div class="risk ${riskClass}"><strong>${riskN} van ${ties.length} aanknopingspunten.</strong> ${riskTxt}</div>
-        ${saleNote}
       </article>
 
       <article class="card">
