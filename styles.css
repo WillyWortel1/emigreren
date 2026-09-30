@@ -319,14 +319,20 @@ button.btn.small { padding: 8px 12px; font-size: 13px; height: 36px; }
 }
 .row-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
 
-.disclaimer, .site-footer {
+.site-link {
+  color: var(--fg);
+  text-decoration: none;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.site-link:hover { text-decoration: underline; text-underline-offset: 2px; }
+.site-footer {
   max-width: 72rem;
   margin: 0 auto;
-  padding: 0 24px 40px;
-  font-size: 13px;
-  color: var(--fg-subtle);
+  padding: 8px 24px 48px;
+  text-align: center;
+  font-size: 14px;
 }
-.site-footer { text-align: center; padding-bottom: 48px; }
 .site-footer a { color: var(--fg); text-decoration: none; }
 .site-footer a:hover { text-decoration: underline; text-underline-offset: 2px; }
 

@@ -331,14 +331,20 @@ button.btn.small { padding: 8px 12px; font-size: 13px; height: 36px; }
 }
 .row-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
 
-.disclaimer, .site-footer {
+.site-link {
+  color: var(--fg);
+  text-decoration: none;
+  font-size: 14px;
+  white-space: nowrap;
+}
+.site-link:hover { text-decoration: underline; text-underline-offset: 2px; }
+.site-footer {
   max-width: 72rem;
   margin: 0 auto;
-  padding: 0 24px 40px;
-  font-size: 13px;
-  color: var(--fg-subtle);
+  padding: 8px 24px 48px;
+  text-align: center;
+  font-size: 14px;
 }
-.site-footer { text-align: center; padding-bottom: 48px; }
 .site-footer a { color: var(--fg); text-decoration: none; }
 .site-footer a:hover { text-decoration: underline; text-underline-offset: 2px; }
 
@@ -416,6 +422,7 @@ table.grid th {
             <div id="progress-label">—</div>
             <div class="progress-bar"><span></span></div>
           </div>
+          <a class="site-link" href="https://www.willemvroom.nl" target="_blank" rel="noopener">willemvroom.nl</a>
           <button class="icon-btn" id="theme-toggle" type="button" aria-label="Thema">
             <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
               <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
