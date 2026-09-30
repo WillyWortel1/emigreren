@@ -523,5 +523,27 @@
     return escapeHtml(s).replace(/"/g, String.fromCharCode(38,113,117,111,116,59));
   }
 
+  function initTheme() {
+    const btn = document.getElementById("theme-toggle");
+    const sun = btn && btn.querySelector(".icon-sun");
+    const moon = btn && btn.querySelector(".icon-moon");
+    const apply = (dark) => {
+      document.documentElement.classList.toggle("dark", dark);
+      document.documentElement.style.colorScheme = dark ? "dark" : "light";
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute("content", dark ? "#0a0a0a" : "#ffffff");
+      if (sun) sun.style.display = dark ? "none" : "block";
+      if (moon) moon.style.display = dark ? "block" : "none";
+      try {
+        localStorage.setItem("emigreren-theme", dark ? "dark" : "light");
+      } catch (_) {}
+    };
+    apply(document.documentElement.classList.contains("dark"));
+    if (btn) {
+      btn.onclick = () => apply(!document.documentElement.classList.contains("dark"));
+    }
+  }
+
   render();
+  initTheme();
 })();
