@@ -168,6 +168,10 @@ nav.tabs button.active {
   color: var(--fg);
   background: var(--surface-2);
 }
+nav.tabs .tab-reset {
+  margin-left: auto;
+  color: var(--fg-muted);
+}
 
 main { padding: 28px 24px 48px; max-width: 72rem; margin: 0 auto; }
 
@@ -434,7 +438,6 @@ table.grid th {
             <div id="progress-label">—</div>
             <div class="progress-bar"><span></span></div>
           </div>
-          <button class="text-btn" id="reset-data" type="button">Wissen</button>
           <button class="icon-btn" id="theme-toggle" type="button" aria-label="Thema">
             <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
               <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
@@ -451,6 +454,7 @@ table.grid th {
         <button data-tab="fiscaal">Fiscaal</button>
         <button data-tab="mail">E-maillijst</button>
         <button data-tab="info">Spelregels</button>
+        <button class="tab-reset" id="reset-data" type="button">Wissen</button>
       </nav>
     </header>
     <main id="view"></main>
@@ -1724,7 +1728,7 @@ Met vriendelijke groet,
   }
 
   function bind() {
-    $$("nav.tabs button").forEach((b) => (b.onclick = () => setTab(b.dataset.tab)));
+    $$("nav.tabs [data-tab]").forEach((b) => (b.onclick = () => setTab(b.dataset.tab)));
     $$("[data-go]").forEach((b) => (b.onclick = () => setTab(b.dataset.go)));
     $$("[data-profile]").forEach((el) => {
       el.addEventListener("change", () => {

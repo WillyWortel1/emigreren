@@ -434,7 +434,7 @@
   }
 
   function bind() {
-    $$("nav.tabs button").forEach((b) => (b.onclick = () => setTab(b.dataset.tab)));
+    $$("nav.tabs [data-tab]").forEach((b) => (b.onclick = () => setTab(b.dataset.tab)));
     $$("[data-go]").forEach((b) => (b.onclick = () => setTab(b.dataset.go)));
     $$("[data-profile]").forEach((el) => {
       el.addEventListener("change", () => {
