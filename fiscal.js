@@ -112,6 +112,11 @@ Met vriendelijke groet,
   window.EMIGREER_FISCAL = {
     ties: [
       { id: "woning-nl", label: "Ik houd een gemeubileerde woning in NL die voor mij beschikbaar blijft" },
+      {
+        id: "woning-tekoop",
+        label: "Mijn woning in Nederland staat te koop",
+        hint: "Te koop is geen fiscale emigratie. Zolang je de sleutel hebt en er kunt overnachten, telt de woning als duurzaam tehuis in NL. Pas na levering (of als hij leeg, ontoegankelijk en serieus in de markt is) wordt die band zwakker. Tot die tijd blijft het Nederlandse onroerend goed.",
+      },
       { id: "gezin-nl", label: "Partner of gezin blijft in Nederland wonen" },
       { id: "tijd-nl", label: "Ik verwacht een groot deel van het jaar in Nederland door te brengen" },
       { id: "werk-nl", label: "Werk, klanten of feitelijke leiding van een BV blijven in NL" },
