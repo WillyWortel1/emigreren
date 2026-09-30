@@ -544,6 +544,21 @@
     }
   }
 
+  function initReset() {
+    const btn = document.getElementById("reset-data");
+    if (!btn) return;
+    btn.onclick = () => {
+      const ok = window.confirm("Alle gegevens in deze browser wissen? Dossier, afvinklijst en notities gaan weg. Dit kan niet ongedaan.");
+      if (!ok) return;
+      try {
+        localStorage.removeItem(STORAGE);
+      } catch (_) {}
+      state = defaultState();
+      render();
+    };
+  }
+
   render();
   initTheme();
+  initReset();
 })();

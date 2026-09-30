@@ -331,6 +331,18 @@ button.btn.small { padding: 8px 12px; font-size: 13px; height: 36px; }
 }
 .row-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
 
+.text-btn {
+  height: 44px;
+  padding: 0 12px;
+  border: 0;
+  background: transparent;
+  color: var(--fg);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 12px;
+}
+.text-btn:hover { background: var(--surface-2); }
 .site-link {
   color: var(--fg);
   text-decoration: none;
@@ -423,6 +435,7 @@ table.grid th {
             <div class="progress-bar"><span></span></div>
           </div>
           <a class="site-link" href="https://www.willemvroom.nl" target="_blank" rel="noopener">willemvroom.nl</a>
+          <button class="text-btn" id="reset-data" type="button">Wissen</button>
           <button class="icon-btn" id="theme-toggle" type="button" aria-label="Thema">
             <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
               <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
@@ -1822,8 +1835,23 @@ Met vriendelijke groet,
     }
   }
 
+  function initReset() {
+    const btn = document.getElementById("reset-data");
+    if (!btn) return;
+    btn.onclick = () => {
+      const ok = window.confirm("Alle gegevens in deze browser wissen? Dossier, afvinklijst en notities gaan weg. Dit kan niet ongedaan.");
+      if (!ok) return;
+      try {
+        localStorage.removeItem(STORAGE);
+      } catch (_) {}
+      state = defaultState();
+      render();
+    };
+  }
+
   render();
   initTheme();
+  initReset();
 })();
 
 </script>

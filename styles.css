@@ -319,6 +319,18 @@ button.btn.small { padding: 8px 12px; font-size: 13px; height: 36px; }
 }
 .row-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
 
+.text-btn {
+  height: 44px;
+  padding: 0 12px;
+  border: 0;
+  background: transparent;
+  color: var(--fg);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 12px;
+}
+.text-btn:hover { background: var(--surface-2); }
 .site-link {
   color: var(--fg);
   text-decoration: none;
