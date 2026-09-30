@@ -1430,7 +1430,7 @@ Met vriendelijke groet,
       bsn: "",
       adres_nl: "",
       adres_buitenland: "",
-      bestemming: "hr",
+      bestemming: "",
       datum: "",
       polis: "",
       rekeningen: "",
@@ -1474,10 +1474,18 @@ Met vriendelijke groet,
   }
 
   function dest() {
-    return EMIGREER_DATA.destinations[state.profile.bestemming] || EMIGREER_DATA.destinations.eu;
+    return (
+      EMIGREER_DATA.destinations[state.profile.bestemming] || {
+        id: "",
+        name: "Geen bestemming",
+        region: "",
+        notes: "Kies eerst een bestemming in het dossier. Taken en e-mails volgen daarna het land.",
+      }
+    );
   }
 
   function destOptions() {
+    const none = `<option value="" ${!state.profile.bestemming ? "selected" : ""}>Kies een bestemming</option>`;
     const all = Object.values(EMIGREER_DATA.destinations);
     const pick = (group) =>
       all
@@ -1489,7 +1497,7 @@ Met vriendelijke groet,
       const d = EMIGREER_DATA.destinations[id];
       return `<option value="${d.id}" ${state.profile.bestemming === d.id ? "selected" : ""}>${d.name}</option>`;
     };
-    return `<optgroup label="EU, EER en Zwitserland">${pick("eu")}${generic("eu")}</optgroup><optgroup label="Buiten de EU">${pick("world")}${generic("world")}</optgroup>`;
+    return `${none}<optgroup label="EU, EER en Zwitserland">${pick("eu")}${generic("eu")}</optgroup><optgroup label="Buiten de EU">${pick("world")}${generic("world")}</optgroup>`;
   }
 
   function visibleTasks() {
@@ -1518,7 +1526,7 @@ Met vriendelijke groet,
       bsn: p.bsn || "[BSN]",
       adres_nl: p.adres_nl || "[adres in Nederland]",
       adres_buitenland: p.adres_buitenland || "[adres in het buitenland]",
-      bestemming: dest().name,
+      bestemming: dest().id ? dest().name : "[bestemming]",
       datum: formatDate(p.datum) || "[vertrekdatum]",
       polis: p.polis || "[polisnummer]",
       rekeningen: p.rekeningen || "[IBAN]",
@@ -1566,7 +1574,7 @@ Met vriendelijke groet,
     const daysTxt =
       days == null ? "Nog geen vertrekdatum" : days > 0 ? `${days} dagen tot vertrek` : days === 0 ? "Vandaag vertrek" : `${Math.abs(days)} dagen onderweg`;
     $("#progress-label").textContent = `${p.done} van ${p.total} taken · ${p.pct}%`;
-    $("#progress-days").textContent = `${dest().name} · ${daysTxt}`;
+    $("#progress-days").textContent = dest().id ? `${dest().name} · ${daysTxt}` : daysTxt;
     const bar = $(".progress-bar span");
     if (bar) bar.style.width = p.pct + "%";
     $$("nav.tabs button").forEach((b) => b.classList.toggle("active", b.dataset.tab === state.tab));
