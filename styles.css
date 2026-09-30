@@ -219,9 +219,9 @@ input[type="text"], input[type="date"], input[type="email"], input[type="tel"], 
   box-shadow: var(--shadow);
 }
 select.dest-select {
-  min-height: 28rem;
-  height: min(70vh, 40rem);
-  padding: 6px;
+  height: auto;
+  min-height: 0;
+  padding: 10px 12px;
 }
 .checks {
   display: flex;

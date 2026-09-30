@@ -186,7 +186,7 @@
         ${field("telefoon", "Telefoon", "tel")}
         ${field("datum", "Vertrekdatum", "date")}
         <label class="field">Bestemming</label>
-        <select id="bestemming" class="dest-select" size="22">${destOptions()}</select>
+        <select id="bestemming" class="dest-select">${destOptions()}</select>
         ${field("adres_nl", "Adres in Nederland", "text")}
         ${field("adres_buitenland", "Adres / postadres buitenland", "text")}
         ${field("bsn", "BSN (alleen lokaal op dit apparaat)", "text")}
