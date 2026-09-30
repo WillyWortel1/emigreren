@@ -74,6 +74,28 @@
       why: "NL kent nu geen exit tax op privé-crypto in box 3. Het nieuwe woonland wel een vermogenswinstbelasting (Kroatië: 12% binnen 2 jaar, daarna vaak vrij). Zonder kostprijs betaal je te veel.",
       flags: ["crypto"],
     },
+    {
+      id: "box3-schets",
+      phase: "orientatie",
+      cat: "financieel",
+      title: "Box 3-schets invullen op het tabblad Fiscaal",
+      why: "Peildatum 1 januari van het emigratiejaar. Bank, beleggingen (incl. crypto) en schulden apart. Na echte emigratie valt roerend vermogen meestal buiten NL-box 3; NL-vastgoed blijft.",
+      flags: ["vermogen", "crypto"],
+    },
+    {
+      id: "aow-jaren",
+      phase: "orientatie",
+      cat: "financieel",
+      title: "AOW-jaren tot nu zetten en korting bij stopzetten inschatten",
+      why: "Per jaar zonder verzekering 2% minder AOW. Vrijwillig verzekeren bij de SVB kan, meestal aanvragen binnen een jaar na emigratie.",
+    },
+    {
+      id: "budget-jaar1",
+      phase: "voorbereiden",
+      cat: "financieel",
+      title: "Eerstejaarsbegroting: zorg, wonen, verhuizing, reservepot",
+      why: "Nederlandse zorgpremie stopt meestal op uitschrijfdatum. CAK/S1 is iets anders dan een premie bij een zorgverzekeraar. Zet beide scenario’s in de schets.",
+    },
   ];
 
   const extraEmails = [
@@ -108,6 +130,26 @@ Met vriendelijke groet,
     EMIGREER_DATA.tasks = EMIGREER_DATA.tasks.concat(extraTasks);
     EMIGREER_DATA.emails = EMIGREER_DATA.emails.concat(extraEmails);
   }
+
+  window.EMIGREER_CIJFERS = {
+    jaar: 2026,
+    bijgewerkt: "2026-09-30",
+    box3: {
+      bankPct: 1.28,
+      belegPct: 6,
+      schuldPct: 2.7,
+      tariefPct: 36,
+      heffingvrij: 59357,
+      schuldDrempel: 3800,
+    },
+    aow: {
+      alleenstaandBruto: 1662.16,
+      alleenstaandNetto: 1581.55,
+      vanaf: "2026-07-01",
+      bron: "https://www.svb.nl/nl/aow/bedragen-aow/aow-bedragen",
+    },
+    bronBox3: "https://www.belastingdienst.nl/wps/wcm/connect/nl/box-3/content/berekening-box-3-inkomen-2026",
+  };
 
   window.EMIGREER_FISCAL = {
     ties: [

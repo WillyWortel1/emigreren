@@ -1,5 +1,20 @@
 (() => {
   const STORAGE = "emigreren.v1";
+  const DOCS = [
+    { id: "paspoort", label: "Paspoort (geldig)" },
+    { id: "idkaart", label: "ID-kaart" },
+    { id: "rijbewijs", label: "Rijbewijs" },
+    { id: "uittreksel", label: "Uittreksel BRP / bewijs uitschrijving" },
+    { id: "apostille", label: "Apostille / legalisatie" },
+    { id: "huurkoop", label: "Huurcontract of eigendomsakte NL" },
+    { id: "akte_bestemming", label: "Huur of koop ter bestemming" },
+    { id: "polis", label: "Zorgpolis + opzegbevestiging" },
+    { id: "jaaropgave", label: "Jaaropgaven / vermogensoverzicht" },
+    { id: "volmacht", label: "Notariële volmacht" },
+    { id: "kvk", label: "KvK-uittreksel", flag: "onderneming" },
+    { id: "vve", label: "VvE-stukken / splitsingsakte", flag: "woning" },
+    { id: "kenteken", label: "Kentekenbewijs / tenaamstelling", flag: "voertuig" },
+  ];
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
@@ -19,7 +34,14 @@
       klantnummer: "",
       ean: "",
       unit: "",
-      flags: { woning: false, auto: false, camper: false, caravan: false, boot: false, trailer: false, huisdier: false, uitkering: false, vermogen: false, ab: false, pensioen: false, crypto: false },
+      kvk: "",
+      btw: "",
+      factuuradres: "",
+      kenteken: "",
+      partner_naam: "",
+      werkgever: "",
+      school: "",
+      flags: { woning: false, auto: false, camper: false, caravan: false, boot: false, trailer: false, huisdier: false, uitkering: false, vermogen: false, ab: false, pensioen: false, crypto: false, onderneming: false, partner: false, kinderen: false, werkgever: false },
     },
     done: {},
     notes: "",
@@ -30,6 +52,8 @@
     people: [],
     media: {},
     mediaExtra: [],
+    docs: {},
+    money: { bank: "", beleg: "", schuld: "", aowJaren: "", zorgPm: "", jaarKosten: "" },
   });
 
   let state = load();
@@ -52,6 +76,8 @@
         people: Array.isArray(parsed.people) ? parsed.people : [],
         media: { ...(parsed.media || {}) },
         mediaExtra: Array.isArray(parsed.mediaExtra) ? parsed.mediaExtra : [],
+        docs: { ...base.docs, ...(parsed.docs || {}) },
+        money: { ...base.money, ...(parsed.money || {}) },
       };
     } catch {
       return base;
@@ -121,6 +147,13 @@
       klantnummer: p.klantnummer || "[klantnummer]",
       ean: p.ean || "[EAN]",
       unit: p.unit || "[unit / adres VvE]",
+      kvk: p.kvk || "[KvK-nummer]",
+      btw: p.btw || "[btw-id]",
+      factuuradres: p.factuuradres || "[factuuradres]",
+      kenteken: p.kenteken || "[kenteken]",
+      partner_naam: p.partner_naam || "[partner]",
+      werkgever: p.werkgever || "[werkgever]",
+      school: p.school || "[school]",
     };
     return str.replace(/\{\{(\w+)\}\}/g, (_, k) => map[k] ?? "");
   }
@@ -183,7 +216,7 @@
       })
       .join("");
     return `<section class="grid-2">
-      <article class="card">
+      <article class="card card-plan">
         <h2>Stappenplan</h2>
         <p class="muted">${dest().notes}</p>
         <div class="phase-list">${phases}</div>
@@ -191,10 +224,11 @@
           <button class="btn" data-go="lijst">Naar afvinklijst</button>
           <button class="btn ghost" data-go="fiscaal">Fiscale laag</button>
         </div>
+        ${renderArrival()}
       </article>
-      <article class="card">
+      <article class="card card-dossier">
         <h2>Jouw dossier</h2>
-        <p class="muted">Deze gegevens vullen de e-mails. Alles blijft in deze browser.</p>
+        <p class="muted">Deze gegevens vullen de e-mails. Exporteer het dossier als je van apparaat wisselt.</p>
         ${field("naam", "Naam", "text")}
         ${field("email", "E-mail", "email")}
         ${field("telefoon", "Telefoon", "tel")}
@@ -218,7 +252,18 @@
           ${flag("vermogen", "Aanzienlijk box 3-vermogen")}
           ${flag("crypto", "Crypto in privé")}
           ${flag("ab", "BV / aanmerkelijk belang")}
+          ${flag("onderneming", "Eenmanszaak / KvK-inschrijving")}
+          ${flag("partner", "Partner")}
+          ${flag("kinderen", "Kinderen")}
+          ${flag("werkgever", "Werkgever in NL")}
         </div>
+        ${state.profile.flags.partner ? field("partner_naam", "Naam partner", "text") : ""}
+        ${state.profile.flags.kinderen ? field("school", "School / opvang in NL", "text") : ""}
+        ${state.profile.flags.werkgever ? field("werkgever", "Werkgever", "text") : ""}
+        ${state.profile.flags.onderneming ? `${field("kvk", "KvK-nummer", "text")}${field("btw", "Btw-id", "text")}${field("factuuradres", "Factuuradres", "text")}` : ""}
+        ${(state.profile.flags.auto || state.profile.flags.camper || state.profile.flags.caravan || state.profile.flags.trailer) ? field("kenteken", "Kenteken (voor RDW-mail)", "text") : ""}
+        ${renderDocs()}
+        ${renderCarry()}
         <label class="field">Notities</label>
         <textarea id="notes">${escapeHtml(state.notes)}</textarea>
       </article>
@@ -230,6 +275,169 @@
   }
   function flag(key, label) {
     return `<label><input type="checkbox" data-flag="${key}" ${state.profile.flags[key] ? "checked" : ""}> ${label}</label>`;
+  }
+
+  function visibleDocs() {
+    return DOCS.filter((d) => !d.flag || state.profile.flags[d.flag] || (d.flag === "voertuig" && (state.profile.flags.auto || state.profile.flags.camper || state.profile.flags.caravan || state.profile.flags.trailer || state.profile.flags.boot)));
+  }
+
+  function renderDocs() {
+    const list = visibleDocs();
+    const have = list.filter((d) => state.docs[d.id]).length;
+    const rows = list
+      .map(
+        (d) =>
+          `<label class="doc-row"><input type="checkbox" data-doc="${d.id}" ${state.docs[d.id] ? "checked" : ""}><span>${d.label}</span></label>`
+      )
+      .join("");
+    return `<label class="field">Documentenmap · ${have}/${list.length} in bezit</label>
+      <div class="doc-list">${rows}</div>
+      <p class="tiny">Alleen afvinken wat je fysiek of gescand hebt. Niets wordt geüpload.</p>`;
+  }
+
+  function renderArrival() {
+    const pack = EMIGREER_DATA.arrival || {};
+    const d = dest();
+    const lines = d.region === "world" ? pack.world : d.region === "eu" ? pack.eu : null;
+    if (!lines) {
+      return `<div class="callout" style="margin-top:16px"><strong>Aankomst</strong>Kies een bestemming. Dan verschijnt een korte lijst voor EU of buiten de EU — geen land-encyclopedie.</div>`;
+    }
+    const title = d.region === "world" ? "Aankomst buiten de EU" : "Aankomst in de EU / EER / Zwitserland";
+    return `<div class="callout" style="margin-top:16px"><strong>${title} · ${escapeHtml(d.name)}</strong><ul class="arrival-list">${lines
+      .map((l) => `<li>${l}</li>`)
+      .join("")}</ul><p class="tiny">${escapeHtml(d.notes || "")}</p></div>`;
+  }
+
+  function deadlineRows() {
+    const d = state.profile.datum;
+    if (!d) return [];
+    const year = Number(d.slice(0, 4));
+    const iso = (label) => {
+      if (label.startsWith("1 jan")) return `${year}-01-01`;
+      if (label.startsWith("1 mei")) return `${year + 1}-05-01`;
+      return null;
+    };
+    return [
+      { iso: `${year}-01-01`, title: "Box 3-peildatum emigratiejaar", note: "Foto bank, broker, wallets." },
+      { iso: addDays(d, -5), title: "BRP-uitschrijving mag", note: "Laatste vijf dagen voor vertrek." },
+      { iso: d, title: "Beoogde vertrekdatum", note: "Zorgpolis meestal t/m deze dag." },
+      { iso: `${year + 1}-05-01`, title: "Aangifte M-biljet (richtlijn)", note: "Check de echte deadline op belastingdienst.nl." },
+      { iso: addDays(d, 365), title: "Richtlijn vrijwillige AOW-verzekering", note: "Vaak binnen één jaar na emigratie." },
+    ];
+  }
+
+  function renderCarry() {
+    return `<label class="field">Meenemen</label>
+      <div class="row-actions">
+        <button class="btn small" type="button" data-export-json>Dossier-bestand</button>
+        <button class="btn ghost small" type="button" data-print-dossier>Print / PDF</button>
+        <button class="btn ghost small" type="button" data-export-ics>Agenda (.ics)</button>
+      </div>
+      <label class="tiny" style="display:block;margin-top:8px">Ander apparaat: kies het gedownloade bestand.
+        <input type="file" accept="application/json,.json" data-import-json style="display:block;margin-top:6px">
+      </label>`;
+  }
+
+  function downloadBlob(name, mime, text) {
+    const blob = new Blob([text], { type: mime });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 500);
+  }
+
+  function exportJson() {
+    save();
+    downloadBlob("emigreren-dossier.json", "application/json", JSON.stringify(state, null, 2));
+  }
+
+  function importJsonFile(file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(String(reader.result || ""));
+        if (!parsed || typeof parsed !== "object") throw new Error("ongeldig");
+        const base = defaultState();
+        state = {
+          ...base,
+          ...parsed,
+          profile: {
+            ...base.profile,
+            ...(parsed.profile || {}),
+            flags: { ...base.profile.flags, ...((parsed.profile && parsed.profile.flags) || {}) },
+          },
+          ties: { ...base.ties, ...(parsed.ties || {}) },
+          people: Array.isArray(parsed.people) ? parsed.people : [],
+          media: { ...(parsed.media || {}) },
+          mediaExtra: Array.isArray(parsed.mediaExtra) ? parsed.mediaExtra : [],
+          docs: { ...base.docs, ...(parsed.docs || {}) },
+          money: { ...base.money, ...(parsed.money || {}) },
+        };
+        save();
+        render();
+      } catch {
+        window.alert("Dit bestand is geen Emigreren-dossier.");
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function printDossier() {
+    const open = visibleTasks().filter((t) => !state.done[t.id]);
+    const docs = visibleDocs();
+    const mails = visibleEmails();
+    const html = `<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>Emigreren — dossier</title>
+      <style>body{font:16px/1.45 system-ui,sans-serif;padding:24px;color:#111}h1{font-size:1.6rem}h2{font-size:1.15rem;margin-top:1.4em}li{margin:.25em 0}.muted{color:#555}table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid #ddd;text-align:left;padding:6px 8px}</style>
+      </head><body>
+      <h1>Emigreren</h1>
+      <p>${escapeHtml(state.profile.naam || "")} · ${escapeHtml(dest().name)} · ${escapeHtml(formatDate(state.profile.datum) || "geen datum")}</p>
+      <h2>Openstaande taken (${open.length})</h2>
+      <ul>${open.map((t) => `<li>${escapeHtml(t.title)}</li>`).join("") || "<li class=muted>Geen</li>"}</ul>
+      <h2>Documenten</h2>
+      <ul>${docs.map((d) => `<li>${state.docs[d.id] ? "✓" : "○"} ${escapeHtml(d.label)}</li>`).join("")}</ul>
+      <h2>Mails klaarzetten</h2>
+      <ul>${mails.map((e) => `<li>${escapeHtml(e.title)}</li>`).join("")}</ul>
+      <p class="muted">Geen advies. Controleer termijnen op de officiële sites.</p>
+      </body></html>`;
+    const w = window.open("", "_blank");
+    if (!w) return;
+    w.document.write(html);
+    w.document.close();
+    w.focus();
+    w.print();
+  }
+
+  function exportIcs() {
+    const rows = deadlineRows();
+    if (!rows.length) {
+      window.alert("Zet eerst een vertrekdatum in het dossier.");
+      return;
+    }
+    const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d+Z$/, "Z");
+    const ev = rows
+      .map((r, i) => {
+        const day = String(r.iso || "").replace(/-/g, "");
+        if (day.length !== 8) return "";
+        return `BEGIN:VEVENT\nUID:emigreren-${i}@grok.me\nDTSTAMP:${stamp}\nDTSTART;VALUE=DATE:${day}\nSUMMARY:${r.title}\nDESCRIPTION:${r.note}\nEND:VEVENT`;
+      })
+      .filter(Boolean)
+      .join("\n");
+    downloadBlob("emigreren-agenda.ics", "text/calendar", `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Emigreren//NL\nCALSCALE:GREGORIAN\n${ev}\nEND:VCALENDAR\n`);
+  }
+
+  function visibleEmails() {
+    const d = dest();
+    return EMIGREER_DATA.emails.filter((e) => {
+      if (e.id === "hr-opcine" && d.id !== "hr") return false;
+      if (e.id === "rdw" && !(state.profile.flags.auto || state.profile.flags.camper || state.profile.flags.caravan || state.profile.flags.trailer || state.profile.flags.boot)) return false;
+      if (e.id === "kvk" && !state.profile.flags.onderneming && !state.profile.flags.ab) return false;
+      if (e.id === "vve" && !state.profile.flags.woning) return false;
+      if (e.id === "uwv" && !state.profile.flags.uitkering) return false;
+      if (e.id === "werkgever" && !state.profile.flags.werkgever) return false;
+      if (e.id === "school" && !state.profile.flags.kinderen) return false;
+      return true;
+    });
   }
 
   function renderList() {
@@ -271,7 +479,8 @@
   }
 
   function renderMail() {
-    return `<div class="email-list">${EMIGREER_DATA.emails
+    const docsBlock = `<article class="card" style="margin-bottom:16px">${renderDocs()}</article>`;
+    return `${docsBlock}<div class="email-list">${visibleEmails()
       .map((e) => {
         const subject = fillTemplate(e.subject);
         const body = fillTemplate(e.body);
@@ -283,12 +492,119 @@
           <div class="preview">${escapeHtml(body)}</div>
           <div class="row-actions">
             <button class="btn small" data-copy="${e.id}">Kopieer tekst</button>
-            <a class="btn ghost small" href="${mailto}">Open in mailprogramma</a>
+            <a class="btn ghost small" href="${mailto}">Verstuur via je mailprogramma</a>
           </div>
         </article>`;
       })
       .join("")}</div>
-      <p class="muted" style="margin-top:16px">Vul eerst je dossier op het tabblad Stappenplan. Plaatshouders tussen haakjes zijn nog leeg.</p>`;
+      <p class="muted" style="margin-top:16px">De app verstuurt zelf geen e-mail. Kopieer of open je mailprogramma. VvE, KvK, RDW, UWV, werkgever en school verschijnen als het vinkje aanstaat.</p>`;
+  }
+
+  function parseEuro(s) {
+    const t = String(s || "")
+      .replace(/\s/g, "")
+      .replace(/\./g, "")
+      .replace(",", ".");
+    const n = Number(t);
+    return Number.isFinite(n) ? n : 0;
+  }
+  function fmtEuro(n) {
+    return new Intl.NumberFormat("nl-NL", { style: "currency", currency: "EUR", maximumFractionDigits: 0 }).format(Math.round(n || 0));
+  }
+  function addDays(iso, days) {
+    if (!iso) return "";
+    const dt = new Date(iso + "T12:00:00");
+    dt.setDate(dt.getDate() + days);
+    return dt.toISOString().slice(0, 10);
+  }
+  function ageOn(isoDay) {
+    const g = state.profile.geboortedatum;
+    if (!g) return null;
+    const [y, m, d] = g.split("-").map(Number);
+    const [Y, M, D] = (isoDay || new Date().toISOString().slice(0, 10)).split("-").map(Number);
+    let a = Y - y;
+    if (M < m || (M === m && D < d)) a--;
+    return a;
+  }
+  function cijfers() {
+    return (
+      window.EMIGREER_CIJFERS || {
+        jaar: 2026,
+        bijgewerkt: "2026-09-30",
+        box3: { bankPct: 1.28, belegPct: 6, schuldPct: 2.7, tariefPct: 36, heffingvrij: 59357, schuldDrempel: 3800 },
+        aow: { alleenstaandNetto: 1581.55 },
+      }
+    );
+  }
+  function box3Sketch() {
+    const c = cijfers().box3;
+    const bank = parseEuro(state.money.bank);
+    const beleg = parseEuro(state.money.beleg);
+    const schuld = parseEuro(state.money.schuld);
+    const HV = c.heffingvrij;
+    const aftrek = Math.max(0, schuld - c.schuldDrempel);
+    const rend = bank * (c.bankPct / 100) + beleg * (c.belegPct / 100) - aftrek * (c.schuldPct / 100);
+    const grond = bank + beleg - aftrek;
+    if (grond <= 0) return { tax: 0, grond, note: "Geen rendementsgrondslag." };
+    if (grond <= HV) return { tax: 0, grond, note: `Onder het heffingvrij vermogen (${fmtEuro(HV)}, ${cijfers().jaar}).` };
+    const voordeel = rend * ((grond - HV) / grond);
+    return {
+      tax: Math.max(0, voordeel * (c.tariefPct / 100)),
+      grond,
+      note: `Forfait ${cijfers().jaar}: bank ${String(c.bankPct).replace(".", ",")} % · beleg/crypto ${String(c.belegPct).replace(".", ",")} % · schulden ${String(c.schuldPct).replace(".", ",")} % · tarief ${c.tariefPct} %. Bank/schuld-percentages zijn voorlopig.`,
+    };
+  }
+  function moneyField(key, label, hint) {
+    return `<label class="field">${label}</label><input type="text" inputmode="decimal" data-money="${key}" value="${escapeAttr(state.money[key] || "")}" placeholder="${hint}">`;
+  }
+  function renderDeadlines() {
+    const rows = deadlineRows();
+    if (!rows.length) return `<p class="muted">Zet een vertrekdatum in het dossier voor de geldkalender.</p>`;
+    return `<table class="grid"><tr><th>Wanneer</th><th>Wat</th><th></th></tr>${rows
+      .map((r) => `<tr><td>${formatDate(r.iso)}</td><td>${r.title}</td><td class="tiny">${r.note}</td></tr>`)
+      .join("")}</table>
+      <div class="row-actions"><button class="btn small" type="button" data-export-ics>Zet in je agenda (.ics)</button></div>`;
+  }
+  function renderMoney() {
+    const b = box3Sketch();
+    const aowJaren = Math.min(50, Math.max(0, parseEuro(state.money.aowJaren)));
+    const age = ageOn(state.profile.datum || new Date().toISOString().slice(0, 10));
+    const left = age == null ? null : Math.max(0, 67 - age);
+    const miss = left == null ? Math.max(0, 50 - aowJaren) : left;
+    const full = (cijfers().aow && cijfers().aow.alleenstaandNetto) || 1581.55;
+    const kortPct = miss * 2;
+    const kortEur = full * (kortPct / 100);
+    const zorg = parseEuro(state.money.zorgPm);
+    const jaar = parseEuro(state.money.jaarKosten);
+    const aowLine =
+      age == null
+        ? `Vul geboortedatum in het dossier voor de resterende opbouw tot 67. Ingevulde jaren tot nu: ${aowJaren || "—"}.`
+        : `Leeftijd rond vertrek ±${age}. Tot AOW-leeftijd 67 nog ±${left} jaar opbouw als je in NL blijft.`;
+    return `<article class="card">
+        <h2>Financiële schets</h2>
+        <p class="muted">Rekenhulp, geen aanslag. Cijfers ${cijfers().jaar} (bijgewerkt ${formatDate(cijfers().bijgewerkt) || cijfers().bijgewerkt}), forfaitair. Bronnen: Belastingdienst box 3 en SVB AOW vanaf 1 juli 2026.</p>
+        <div class="money-grid">
+          ${moneyField("bank", "Bank en spaargeld (1 jan)", "0")}
+          ${moneyField("beleg", "Beleggingen + crypto + overig", "0")}
+          ${moneyField("schuld", "Box 3-schulden", "0")}
+          ${moneyField("aowJaren", "AOW-jaren tot nu (0–50)", "35")}
+          ${moneyField("zorgPm", "NL-zorgpremie per maand", "160")}
+          ${moneyField("jaarKosten", "Geschatte kosten eerste jaar ter plaatse", "25000")}
+        </div>
+        <table class="grid">
+          <tr><th>Schets</th><th>Bedrag</th></tr>
+          <tr><td>Box 3 dit jaar als je 1 januari nog inwoner bent</td><td>${fmtEuro(b.tax)}</td></tr>
+          <tr><td>Zelfde vermogen als echte niet-inwoner (zonder NL-vastgoed)</td><td>${fmtEuro(0)}</td></tr>
+          <tr><td>AOW-korting als je nu stopt met opbouwen (±${kortPct}%)</td><td>${fmtEuro(kortEur)} / mnd t.o.v. volle alleenstaande AOW</td></tr>
+          <tr><td>NL-zorgpremie t/m vertrekmaand (12 × premie als je heel jaar blijft)</td><td>${fmtEuro(zorg * 12)} / jaar nu</td></tr>
+          <tr><td>Eerstejaarsbegroting (jouw inschatting)</td><td>${jaar ? fmtEuro(jaar) : "—"}</td></tr>
+        </table>
+        <p class="tiny">${b.note} ${aowLine} Conserverende aanslag (pensioen, lijfrente, AB) is een claim, geen bedrag dat je hier kunt invullen — vraag de waarde op bij fonds of BV.</p>
+      </article>
+      <article class="card">
+        <h2>Geldkalender</h2>
+        ${renderDeadlines()}
+      </article>`;
   }
 
   function renderFiscal() {
@@ -336,6 +652,7 @@
       </article>`;
 
     return `<div class="fiscal-stack">
+      ${renderMoney()}
       <article class="card">
         <h2>Drie klokken, drie data</h2>
         <p>Uitschrijven bij de gemeente is geen fiscale emigratie. De Belastingdienst kijkt of er een <em>duurzame band van persoonlijke aard</em> met Nederland rest (art. 4 AWR). Dagen tellen mee als bewijs, niet als drempel. De 183-dagenregel leeft in verdragen en in sommige woonlanden — niet in de Nederlandse wet zelf.</p>
@@ -442,6 +759,8 @@
         <li><strong>Sociale zekerheid en zorg</strong> — SVB, CAK, zorgverzekeraar. Stoppen op de verkeerde dag kost geld of dekking.</li>
       </ul>
       <p>Dit hulpmiddel houdt die drie bij in één afvinklijst, met e-mails die je alleen nog hoeft te controleren. Het is geen advies en geen vervanging van een fiscalist, notaris of de officiële sites.</p>
+      <p>De app is voor iedereen die uit Nederland vertrekt. Kies een bestemming in het dossier: taken en mails volgen dat land. Extra regels (visum, apostille, lokaal nummer) komen erbij als ze voor dat land gelden — niet als een speciaal landpakket vooraf.</p>
+      <p>Op je telefoon: deel-menu → <em>Zet op beginscherm</em> (of Safari: Deel → Voeg toe aan beginscherm). Daarna werkt de checklist ook zonder bereik, met de laatst geladen versie.</p>
       <p class="muted">Officiële bronnen die in de taken zitten: Belastingdienst-checklist emigreren, Nederland Wereldwijd, DigiD, SVB, RDW, Het CAK.</p>
     </article>`;
   }
@@ -503,8 +822,33 @@
       el.onchange = () => {
         state.profile.flags[el.dataset.flag] = el.checked;
         save();
+        render();
       };
     });
+    $$("[data-doc]").forEach((el) => {
+      el.onchange = () => {
+        state.docs[el.dataset.doc] = el.checked;
+        save();
+      };
+    });
+    $$("[data-money]").forEach((el) => {
+      el.addEventListener("change", () => {
+        state.money[el.dataset.money] = el.value;
+        save();
+        render();
+      });
+    });
+    $$("[data-export-json]").forEach((b) => (b.onclick = exportJson));
+    $$("[data-print-dossier]").forEach((b) => (b.onclick = printDossier));
+    $$("[data-export-ics]").forEach((b) => (b.onclick = exportIcs));
+    const imp = $("[data-import-json]");
+    if (imp) {
+      imp.onchange = () => {
+        const file = imp.files && imp.files[0];
+        if (file) importJsonFile(file);
+        imp.value = "";
+      };
+    }
     $$("[data-tie]").forEach((el) => {
       el.onchange = () => {
         state.ties[el.dataset.tie] = el.checked;
@@ -777,4 +1121,7 @@
   render();
   initTheme();
   initReset();
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/sw.js").catch(() => {});
+  }
 })();

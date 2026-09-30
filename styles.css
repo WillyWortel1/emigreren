@@ -232,6 +232,22 @@ select.dest-select {
 }
 .checks label { font-size: 14px; display: flex; gap: 8px; align-items: center; color: var(--fg); }
 
+.doc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 4px 0 8px;
+}
+.doc-row {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 14px;
+  color: var(--fg);
+}
+.arrival-list { margin: 8px 0 0; padding-left: 1.1em; }
+.arrival-list li { margin: 4px 0; }
+
 button.btn, a.btn {
   display: inline-flex;
   align-items: center;
@@ -413,6 +429,15 @@ table.grid th {
 }
 
 .fiscal-stack { display: flex; flex-direction: column; gap: 16px; }
+.money-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 16px;
+  margin-bottom: 8px;
+}
+@media (max-width: 800px) {
+  .money-grid { grid-template-columns: 1fr; }
+}
 .tie-list label { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; margin: 8px 0; }
 .risk {
   margin-top: 12px;
@@ -424,6 +449,7 @@ table.grid th {
 
 @media (max-width: 800px) {
   .grid-2, .phase { grid-template-columns: 1fr; }
+  .grid-2 .card-dossier { order: -1; }
   .header-row, nav.tabs, main, .disclaimer, .site-footer { padding-left: 16px; padding-right: 16px; }
   .progress-bar { display: none; }
 }

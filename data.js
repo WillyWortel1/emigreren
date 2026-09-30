@@ -121,6 +121,26 @@ window.EMIGREER_DATA = {
     return out;
   })(),
 
+  arrival: {
+    eu: [
+      "Schrijf je in bij de gemeente van je nieuwe woonplaats (niet bij de Nederlandse ambassade).",
+      "Vraag het lokale persoonsnummer aan (het equivalent van BSN).",
+      "Meld je aan voor lokale of verdrag-zorg (S1/CAK als dat speelt, anders een lokale kas of particuliere polis).",
+      "Open een lokale bankrekening voor huur, loon en vaste lasten.",
+      "Zet het Nederlandse rijbewijs op de lokale regels; in de EU blijft het geldig tot de einddatum.",
+      "Geef je buitenlandse adres door in de RNI zodra je het hebt.",
+    ],
+    world: [
+      "Rond visum of verblijf af vóór je in Nederland uitschrijft.",
+      "Laat aktes legaliseren (apostille) als het land dat eist.",
+      "Schrijf je in volgens de lokale vreemdelingen- of gemeenteregels.",
+      "Regel zorg privé of via werkgever; Nederlandse basisverzekering dekt wonen buiten de EU meestal niet.",
+      "Open een lokale bankrekening; vraag je NL-bank wat er met je oude rekeningen gebeurt.",
+      "Check of je rijbewijs omgewisseld moet worden, vaak binnen een termijn na vestiging.",
+      "Geef je buitenlandse adres door in de RNI.",
+    ],
+  },
+
   phases: [
     {
       id: "orientatie",
@@ -606,6 +626,70 @@ window.EMIGREER_DATA = {
       why: "Verouderd adres = kwijtgeraakte post van Belastingdienst en SVB.",
     },
     {
+      id: "cak-s1",
+      phase: "afronden",
+      cat: "administratief",
+      title: "CAK: S1-formulier of stoppen Nederlandse zorg",
+      why: "Pensioen of uitkering in een verdragsland loopt vaak via het CAK (S1). Zonder inkomen uit NL stopt de basisverzekering meestal op de uitschrijfdatum. Te vroeg opzeggen geeft een boete.",
+      email: "cak",
+      links: [
+        { label: "Het CAK — buitenland", href: "https://www.hetcak.nl/regelingen/buitenland" },
+      ],
+    },
+    {
+      id: "kvk-adres",
+      phase: "afronden",
+      cat: "administratief",
+      title: "KvK en btw: vestigings- en factuuradres wijzigen",
+      why: "Een eenmanszaak of BV met NL-adres blijft post en aansprakelijkheid in Nederland houden. Zet KvK, btw en factuurkop gelijk met het dossier.",
+      flags: ["onderneming"],
+      email: "kvk",
+      links: [
+        { label: "KvK — gegevens wijzigen", href: "https://www.kvk.nl/inloggen/" },
+      ],
+    },
+    {
+      id: "notaris-volmacht",
+      phase: "voorbereiden",
+      cat: "administratief",
+      title: "Notariële volmacht voor wat in NL blijft",
+      why: "Woning, VvE, verkoop of bankzaken na vertrek gaan stroef zonder volmacht. Regel die in Nederland, met apostille als het bestemmingsland dat vraagt.",
+      email: "notaris",
+    },
+    {
+      id: "docs-afvinken",
+      phase: "voorbereiden",
+      cat: "administratief",
+      title: "Documentenmap afvinken in het dossier",
+      why: "Paspoort, uittreksel, apostille, aktes, polissen en KvK-stukken. De map staat onder Jouw dossier en op het tabblad E-maillijst.",
+    },
+    {
+      id: "partner-spoor",
+      phase: "voorbereiden",
+      cat: "administratief",
+      title: "Partner: eigen uitschrijving, zorg en eventuele eigen aangifte",
+      why: "Twee mensen zijn twee BRP-inschrijvingen. Fiscale partner blijft relevant tot de emigratiedatum; daarna kijkt elk woonland opnieuw.",
+      flags: ["partner"],
+    },
+    {
+      id: "kinderen-school",
+      phase: "afronden",
+      cat: "administratief",
+      title: "Kinderen uitschrijven bij school of opvang",
+      why: "Vraag overdracht en vaccinatiebewijs mee. In het nieuwe land volgt lokale inschrijving, vaak pas na jouw eigen inschrijving.",
+      flags: ["kinderen"],
+      email: "school",
+    },
+    {
+      id: "werkgever-einde",
+      phase: "afronden",
+      cat: "administratief",
+      title: "Werkgever: einde contract, remote of detacheringsafspraak",
+      why: "Loon, jaaropgave en eventuele 30%-regeling lopen niet vanzelf door. Zet schriftelijk vast wat stopt op de vertrekdatum.",
+      flags: ["werkgever"],
+      email: "werkgever",
+    },
+    {
       id: "kring-lijst",
       phase: "voorbereiden",
       cat: "sociaal",
@@ -732,7 +816,7 @@ BSN: {{bsn}}
 Oud adres: {{adres_nl}}
 Nieuw adres: {{adres_buitenland}}
 
-Wilt u dit adres gebruiken voor alle post, inclusief de aangifte over het jaar van emigratie?
+Wilt u dit adres gebruiken voor alle post, inclusief de aangifte over het jaar van emigratie (M-biljet / gesplitst jaar)?
 
 Met vriendelijke groet,
 {{naam}}
@@ -881,6 +965,130 @@ Hvala,
 {{naam}}
 {{email}}
 {{telefoon}}`,
+    },
+    {
+      id: "cak",
+      title: "CAK — S1 of einde Nederlandse zorg",
+      toHint: "Het CAK, regeling wonen in het buitenland",
+      subject: "Emigratie per {{datum}} naar {{bestemming}} — S1 / zorg",
+      body: `Geachte heer/mevrouw,
+
+Per {{datum}} emigreer ik naar {{bestemming}} en schrijf ik mij uit bij mijn Nederlandse gemeente.
+
+Naam: {{naam}}
+BSN: {{bsn}}
+Geboortedatum: {{geboortedatum}}
+Nieuw adres: {{adres_buitenland}}
+
+Wilt u beoordelen of ik onder de CAK-regeling val (S1 / woonachtig in het buitenland met NL-pensioen of -uitkering), of dat de Nederlandse zorgverzekering stopt per uitschrijfdatum? Graag een schriftelijke bevestiging en, indien van toepassing, het S1-formulier.
+
+Met vriendelijke groet,
+{{naam}}
+{{telefoon}}
+{{email}}`,
+    },
+    {
+      id: "rdw",
+      title: "RDW — uitvoer voertuig",
+      toHint: "RDW export / kentekenloket",
+      subject: "Uitvoer voertuig per {{datum}} — {{kenteken}}",
+      body: `Geachte heer/mevrouw,
+
+Ik emigreer per {{datum}} naar {{bestemming}} en neem het onderstaande voertuig mee.
+
+Kenteken: {{kenteken}}
+Naam: {{naam}}
+Adres nu: {{adres_nl}}
+Nieuw adres: {{adres_buitenland}}
+
+Wilt u bevestigen welke stappen nodig zijn voor uitvoer (en eventuele BPM-teruggaaf) en welke documenten ik op de keuring meeneem?
+
+Met vriendelijke groet,
+{{naam}}
+{{telefoon}}
+{{email}}`,
+    },
+    {
+      id: "kvk",
+      title: "KvK — vestigings- en correspondentieadres",
+      toHint: "Kamer van Koophandel, wijziging inschrijving",
+      subject: "Adreswijziging inschrijving / emigratie per {{datum}}",
+      body: `Geachte heer/mevrouw,
+
+Per {{datum}} woon ik in {{bestemming}}. Ik wil de inschrijving laten aansluiten op die situatie.
+
+KvK-nummer: {{kvk}}
+Btw-id: {{btw}}
+Huidig vestigingsadres: {{adres_nl}}
+Factuuradres: {{factuuradres}}
+Correspondentieadres: {{adres_buitenland}}
+Naam: {{naam}}
+
+Wilt u aangeven wat ik moet wijzigen (vestiging, nevenvestiging, correspondentie) en welke stukken u nodig heeft?
+
+Met vriendelijke groet,
+{{naam}}
+{{telefoon}}
+{{email}}`,
+    },
+    {
+      id: "notaris",
+      title: "Notaris — volmacht en aktes",
+      toHint: "Je Nederlandse notaris",
+      subject: "Volmacht / aktes voor emigratie per {{datum}}",
+      body: `Geachte notaris,
+
+Per {{datum}} emigreer ik naar {{bestemming}}. Ik wil vóór vertrek vastleggen wat in Nederland blijft lopen.
+
+Naam: {{naam}}
+Adres nu: {{adres_nl}}
+Unit / object: {{unit}}
+Nieuw adres: {{adres_buitenland}}
+
+Graag een afspraak over:
+1. een notariële volmacht (VvE, verkoop, bank, post);
+2. of een apostille nodig is voor gebruik in {{bestemming}};
+3. welke legitimatie en stukken ik meeneem.
+
+Met vriendelijke groet,
+{{naam}}
+{{telefoon}}
+{{email}}`,
+    },
+    {
+      id: "werkgever",
+      title: "Werkgever — einde of voortzetting dienstverband",
+      toHint: "HR of je leidinggevende",
+      subject: "Emigratie per {{datum}} — dienstverband / correspondentie",
+      body: `Beste {{werkgever}},
+
+Per {{datum}} verhuis ik naar {{bestemming}} en schrijf ik mij uit in Nederland.
+
+Wilt u bevestigen wat dit betekent voor het dienstverband (einde, remote, detacheringsafspraak) en naar welk adres loonstroken en jaaropgave moeten?
+
+Nieuw adres:
+{{adres_buitenland}}
+{{email}}
+{{telefoon}}
+
+Met vriendelijke groet,
+{{naam}}`,
+    },
+    {
+      id: "school",
+      title: "School / opvang — uitschrijven",
+      toHint: "Administratie van school of opvang",
+      subject: "Uitschrijving per {{datum}} wegens verhuizing naar het buitenland",
+      body: `Beste administratie van {{school}},
+
+Ons gezin verhuist per {{datum}} naar {{bestemming}}. Wilt u de inschrijving beëindigen per die datum en bevestigen welke stukken wij meekrijgen (overdracht, rapport, vaccinaties)?
+
+Ouder / verzorger: {{naam}}
+{{telefoon}}
+{{email}}
+
+Met vriendelijke groet,
+{{naam}}`,
     },
     {
       id: "kring",
