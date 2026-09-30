@@ -417,9 +417,13 @@ window.EMIGREER_DATA = {
       id: "boot-export",
       phase: "afronden",
       cat: "praktisch",
-      title: "Boot: ligplaats, registratie, verzekering en uitvoer",
-      why: "Geen RDW-kenteken zoals een auto. Check eigenaarsregistratie / meetbrief, jachthaven of winterstalling opzeggen, casco- en WA-polis, BTW-status bij uitvoer uit de EU, en of de trailer een eigen kenteken heeft.",
+      title: "Boot: RDW-registratie, ligplaats en uitvoer",
+      why: "Een snelle RIB met registratienummer staat bij de RDW als (klein) pleziervaartuig. Meenemen: uitvoer of wijziging van de registratie vóór lokale inschrijving, plus casco/WA. Achterlaten: registratie wijzigen of beëindigen. Ligplaats- of stallingcontract opzeggen. Trailer met kenteken apart via de RDW. Uitvoer uit de EU: BTW-status meenemen.",
       flags: ["boot"],
+      links: [
+        { label: "RDW — vaartuig registreren", href: "https://www.rdw.nl/vaartuig/kopen-en-verkopen/vaartuig-registreren" },
+        { label: "RDW — registratie aanpassen of stoppen", href: "https://www.rdw.nl/vaartuig/registratie-aanpassen" },
+      ],
     },
     {
       id: "vve",
@@ -553,7 +557,8 @@ window.EMIGREER_DATA = {
       id: "boot-ligplaats",
       phase: "aankomst",
       cat: "praktisch",
-      title: "Boot: ligplaats en lokale registratie regelen",
+      title: "Boot: lokale registratie of RDW-status afronden, ligplaats regelen",
+      why: "Na RDW-uitvoer inschrijven of melden in het nieuwe land als dat verplicht is. Ligplaats vastleggen. Bewaar het oude registratienummer en de uitvoerbevestiging.",
       flags: ["boot"],
     },
 
