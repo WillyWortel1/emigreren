@@ -156,6 +156,11 @@ nav.tabs button.active {
   color: var(--fg);
   background: var(--surface-2);
 }
+nav.tabs .tab-reset {
+  margin-left: auto;
+  font-weight: 700;
+  color: var(--fg);
+}
 
 main { padding: 28px 24px 48px; max-width: 72rem; margin: 0 auto; }
 
