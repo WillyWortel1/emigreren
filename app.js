@@ -166,14 +166,14 @@
     const phases = EMIGREER_DATA.phases
       .map((ph) => {
         const pr = phaseProgress(ph.id);
-        return `<div class="phase">
+        return `<button type="button" class="phase" data-open-phase="${ph.id}">
           <div class="when">${ph.when}</div>
           <div>
             <h3>${ph.title}</h3>
             <div class="muted">${ph.blurb}</div>
           </div>
           <div class="donut" style="--p:${pr.pct}"><span>${pr.done}/${pr.total}</span></div>
-        </div>`;
+        </button>`;
       })
       .join("");
     return `<section class="grid-2">
@@ -499,6 +499,15 @@
     $$("[data-phase]").forEach((el) => {
       el.onclick = () => {
         state.filterPhase = el.dataset.phase;
+        save();
+        render();
+      };
+    });
+    $$("[data-open-phase]").forEach((el) => {
+      el.onclick = () => {
+        state.filterPhase = el.dataset.openPhase;
+        state.filterCat = "all";
+        state.tab = "lijst";
         save();
         render();
       };

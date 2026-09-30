@@ -261,9 +261,19 @@ button.btn.small { padding: 8px 12px; font-size: 13px; height: 36px; }
   grid-template-columns: 132px 1fr auto;
   gap: 12px;
   align-items: center;
-  padding: 14px 0;
+  padding: 14px 8px;
+  margin: 0 -8px;
+  border: 0;
   border-bottom: 1px solid var(--border);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  border-radius: 12px;
 }
+.phase:hover { background: var(--surface-2); }
 .phase:last-child { border-bottom: 0; }
 .phase .when { font-size: 12px; color: var(--fg-subtle); }
 .phase h3 { margin: 0; font-size: 16px; font-weight: 700; }
