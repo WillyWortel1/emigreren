@@ -391,6 +391,37 @@ window.EMIGREER_DATA = {
       ],
     },
     {
+      id: "camper-export",
+      phase: "afronden",
+      cat: "praktisch",
+      title: "Camper: uitvoer bij RDW of schorsen / overschrijven",
+      why: "Een camper is een motorrijtuig. Meenemen: RDW-uitvoer vóór lokale inschrijving, BPM-teruggaaf checken. Achterlaten: schorsen of op naam van een ander.",
+      flags: ["camper"],
+      links: [
+        { label: "Voertuig exporteren — RDW", href: "https://www.rdw.nl/invoeren-exporteren-doorvoeren/voertuig-exporteren" },
+        { label: "BPM-teruggaaf export", href: "https://www.belastingdienst.nl/wps/wcm/connect/nl/bpm/content/teruggaaf-bpm-export-gebruikt-motorrijtuig" },
+      ],
+    },
+    {
+      id: "caravan-export",
+      phase: "afronden",
+      cat: "praktisch",
+      title: "Caravan: RDW-kenteken, verzekering en stalling",
+      why: "Heeft de caravan een NL-kenteken: uitvoer, schorsen of overschrijven bij de RDW. Geen kenteken: eigendomsbewijs, verzekering en stallingcontract opzeggen of meenemen. Check of het nieuwe land een aanhanger apart inschrijft.",
+      flags: ["caravan"],
+      links: [
+        { label: "Voertuig exporteren — RDW", href: "https://www.rdw.nl/invoeren-exporteren-doorvoeren/voertuig-exporteren" },
+      ],
+    },
+    {
+      id: "boot-export",
+      phase: "afronden",
+      cat: "praktisch",
+      title: "Boot: ligplaats, registratie, verzekering en uitvoer",
+      why: "Geen RDW-kenteken zoals een auto. Check eigenaarsregistratie / meetbrief, jachthaven of winterstalling opzeggen, casco- en WA-polis, BTW-status bij uitvoer uit de EU, en of de trailer een eigen kenteken heeft.",
+      flags: ["boot"],
+    },
+    {
       id: "vve",
       phase: "afronden",
       cat: "administratief",
@@ -503,6 +534,27 @@ window.EMIGREER_DATA = {
       cat: "praktisch",
       title: "Auto lokaal inschrijven na RDW-uitvoer",
       flags: ["auto"],
+    },
+    {
+      id: "camper-inschrijven",
+      phase: "aankomst",
+      cat: "praktisch",
+      title: "Camper lokaal inschrijven na RDW-uitvoer",
+      flags: ["camper"],
+    },
+    {
+      id: "caravan-inschrijven",
+      phase: "aankomst",
+      cat: "praktisch",
+      title: "Caravan ter plaatse stallen of inschrijven",
+      flags: ["caravan"],
+    },
+    {
+      id: "boot-ligplaats",
+      phase: "aankomst",
+      cat: "praktisch",
+      title: "Boot: ligplaats en lokale registratie regelen",
+      flags: ["boot"],
     },
 
     /* —— Eerste jaar —— */

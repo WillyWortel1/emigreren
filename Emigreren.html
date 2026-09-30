@@ -460,6 +460,37 @@ window.EMIGREER_DATA = {
       ],
     },
     {
+      id: "camper-export",
+      phase: "afronden",
+      cat: "praktisch",
+      title: "Camper: uitvoer bij RDW of schorsen / overschrijven",
+      why: "Een camper is een motorrijtuig. Meenemen: RDW-uitvoer vóór lokale inschrijving, BPM-teruggaaf checken. Achterlaten: schorsen of op naam van een ander.",
+      flags: ["camper"],
+      links: [
+        { label: "Voertuig exporteren — RDW", href: "https://www.rdw.nl/invoeren-exporteren-doorvoeren/voertuig-exporteren" },
+        { label: "BPM-teruggaaf export", href: "https://www.belastingdienst.nl/wps/wcm/connect/nl/bpm/content/teruggaaf-bpm-export-gebruikt-motorrijtuig" },
+      ],
+    },
+    {
+      id: "caravan-export",
+      phase: "afronden",
+      cat: "praktisch",
+      title: "Caravan: RDW-kenteken, verzekering en stalling",
+      why: "Heeft de caravan een NL-kenteken: uitvoer, schorsen of overschrijven bij de RDW. Geen kenteken: eigendomsbewijs, verzekering en stallingcontract opzeggen of meenemen. Check of het nieuwe land een aanhanger apart inschrijft.",
+      flags: ["caravan"],
+      links: [
+        { label: "Voertuig exporteren — RDW", href: "https://www.rdw.nl/invoeren-exporteren-doorvoeren/voertuig-exporteren" },
+      ],
+    },
+    {
+      id: "boot-export",
+      phase: "afronden",
+      cat: "praktisch",
+      title: "Boot: ligplaats, registratie, verzekering en uitvoer",
+      why: "Geen RDW-kenteken zoals een auto. Check eigenaarsregistratie / meetbrief, jachthaven of winterstalling opzeggen, casco- en WA-polis, BTW-status bij uitvoer uit de EU, en of de trailer een eigen kenteken heeft.",
+      flags: ["boot"],
+    },
+    {
       id: "vve",
       phase: "afronden",
       cat: "administratief",
@@ -572,6 +603,27 @@ window.EMIGREER_DATA = {
       cat: "praktisch",
       title: "Auto lokaal inschrijven na RDW-uitvoer",
       flags: ["auto"],
+    },
+    {
+      id: "camper-inschrijven",
+      phase: "aankomst",
+      cat: "praktisch",
+      title: "Camper lokaal inschrijven na RDW-uitvoer",
+      flags: ["camper"],
+    },
+    {
+      id: "caravan-inschrijven",
+      phase: "aankomst",
+      cat: "praktisch",
+      title: "Caravan ter plaatse stallen of inschrijven",
+      flags: ["caravan"],
+    },
+    {
+      id: "boot-ligplaats",
+      phase: "aankomst",
+      cat: "praktisch",
+      title: "Boot: ligplaats en lokale registratie regelen",
+      flags: ["boot"],
     },
 
     /* —— Eerste jaar —— */
@@ -1017,7 +1069,7 @@ Met vriendelijke groet,
       klantnummer: "",
       ean: "",
       unit: "",
-      flags: { woning: false, auto: false, huisdier: false, uitkering: false, vermogen: false, ab: false, pensioen: false, crypto: false },
+      flags: { woning: false, auto: false, camper: false, caravan: false, boot: false, huisdier: false, uitkering: false, vermogen: false, ab: false, pensioen: false, crypto: false },
     },
     done: {},
     notes: "",
@@ -1199,7 +1251,10 @@ Met vriendelijke groet,
         <label class="field">Situatie</label>
         <div class="checks">
           ${flag("woning", "Woning in NL houden")}
-          ${flag("auto", "Auto meenemen of achterlaten")}
+          ${flag("auto", "Auto")}
+          ${flag("camper", "Camper")}
+          ${flag("caravan", "Caravan")}
+          ${flag("boot", "Boot")}
           ${flag("huisdier", "Huisdier")}
           ${flag("uitkering", "Uitkering uit NL")}
           ${flag("pensioen", "NL-pensioen of lijfrente")}

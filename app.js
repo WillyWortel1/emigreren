@@ -19,7 +19,7 @@
       klantnummer: "",
       ean: "",
       unit: "",
-      flags: { woning: false, auto: false, huisdier: false, uitkering: false, vermogen: false, ab: false, pensioen: false, crypto: false },
+      flags: { woning: false, auto: false, camper: false, caravan: false, boot: false, huisdier: false, uitkering: false, vermogen: false, ab: false, pensioen: false, crypto: false },
     },
     done: {},
     notes: "",
@@ -201,7 +201,10 @@
         <label class="field">Situatie</label>
         <div class="checks">
           ${flag("woning", "Woning in NL houden")}
-          ${flag("auto", "Auto meenemen of achterlaten")}
+          ${flag("auto", "Auto")}
+          ${flag("camper", "Camper")}
+          ${flag("caravan", "Caravan")}
+          ${flag("boot", "Boot")}
           ${flag("huisdier", "Huisdier")}
           ${flag("uitkering", "Uitkering uit NL")}
           ${flag("pensioen", "NL-pensioen of lijfrente")}
