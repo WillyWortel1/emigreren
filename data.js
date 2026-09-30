@@ -1,28 +1,125 @@
 /* Emigreren — data: stappen, taken, e-mails */
 window.EMIGREER_DATA = {
-  destinations: {
-    hr: {
-      id: "hr",
-      name: "Kroatië",
-      region: "eu",
-      notes:
-        "EU-lidstaat. Geen visum. Na vestiging: inschrijving bij de općina, OIB aanvragen, lokale zorg en fiscale woonplaats checken. Nederlands rijbewijs is in de EU geldig.",
-    },
-    eu: {
-      id: "eu",
-      name: "Ander EU-/EER-land",
-      region: "eu",
-      notes:
-        "Geen visum. Wel lokale inschrijving, zorgregeling (soms S1 via CAK) en fiscale woonplaats. Check het belastingverdrag met Nederland.",
-    },
-    world: {
-      id: "world",
-      name: "Buiten de EU",
-      region: "world",
-      notes:
-        "Vaak visum of verblijfsvergunning nodig. Internationale zorgverzekering. Rijbewijs en documenten soms legaliseren (apostille).",
-    },
-  },
+  destinations: (function () {
+    const euNote =
+      "EU/EER of Zwitserland. Geen visum voor vestiging als EU-burger. Wel lokale inschrijving, zorgregeling en fiscale woonplaats. Check het belastingverdrag met Nederland.";
+    const worldNote =
+      "Buiten de EU. Vaak visum of verblijfsvergunning nodig. Internationale zorgverzekering. Documenten soms legaliseren (apostille).";
+    const extra = {
+      hr: "EU-lidstaat. Geen visum. Na vestiging: inschrijving bij de općina, OIB aanvragen, lokale zorg en fiscale woonplaats checken. Nederlands rijbewijs is in de EU geldig.",
+      be: "Buurland. Inschrijving gemeente, Rijksregister, mutualiteit. Fiscale woonplaats en 183-dagenregel goed vastleggen.",
+      de: "Anmeldung bij het Einwohnermeldeamt. Steuer-ID, zorgkas, eventueel Splitting. Check het NL–DE-verdrag.",
+      fr: "Inschrijving gemeente, numéro fiscal, CPAM/S1. Let op exit tax en box 3 versus Frans vermogen.",
+      es: "Empadronamiento, NIE, Seguridad Social. Beckham-regeling is iets anders dan emigreren; toets fiscale woonplaats.",
+      it: "Iscrizione anagrafica, codice fiscale, AIRE als je de Italiaanse nationaliteit hebt. Check het NL–IT-verdrag.",
+      pt: "NIF, inschrijving junta de freguesia, SNS. NHR is afgebouwd; reken niet op oude regimes.",
+      ie: "PPS-nummer, Revenue, PPS/HSE. Engels, EU-regels, eigen zorgstelsel.",
+      at: "Meldezettel, Sozialversicherung, Finanzamt. Let op woonplaats en Immobilien.",
+      pl: "PESEL, ZUS, Urząd Skarbowy. EU, lagere kosten, eigen taalbarrière.",
+      se: "Personnummer, Skatteverket, Försäkringskassan. Hoge belasting, sterke zekerheid.",
+      dk: "CPR, SKAT, yellow card. Strenge woonplaats.",
+      fi: "Henkilötunnus, Kela, Vero. EU, winter, sterke publieke zorg.",
+      gr: "AMKA, AFM, inschrijving dimos. Non-dom bestaat; toets of je echt emigreert.",
+      cz: "Rodné číslo / rodné, zdravotní pojišťovna. EU.",
+      hu: "TAJ, adóazonosító. EU.",
+      ro: "CNP, CNAS. EU.",
+      bg: "EGN, NHIF. EU.",
+      cy: "ARC, Social Insurance. Engels breed in gebruik.",
+      mt: "ID-kaart, CFR. Engels, EU.",
+      lu: "CNS, matrikelnr. EU, veel grenswerkers.",
+      si: "EMŠO, ZZZS. EU, dicht bij Kroatië.",
+      sk: "Rodné číslo, Sociálna poisťovňa. EU.",
+      ee: "Isikukood, Haigekassa. EU, digitaal.",
+      lv: "Personas kods. EU.",
+      lt: "Asmens kodas. EU.",
+      no: "EER. D-nummer/fødselsnummer, NAV, Skatteetaten. Geen EU maar bijna dezelfde vrijheden.",
+      is: "EER. Kennitala, Sjúkratryggingar.",
+      li: "EER. Klein, douane met CH.",
+      ch: "Niet-EU. Verblijfsvergunning nodig (quota). Hoge kosten, verdrag met NL.",
+      gb: "Niet meer EU. Visa, NHS surcharge, apostille. Check het NL–VK-verdrag.",
+      us: "Visa/green card. FATCA, wereldwijd inkomen als je US-person wordt. Apostille, rijbewijs per staat.",
+      ca: "PR/visa, SIN, provinciale zorg. Koude start, puntensysteem.",
+      au: "Visa, Medicare (soms), TFN. Afstand, apostille.",
+      nz: "Visa, IRD, publieke zorg na wachttijd.",
+      za: "Visa, SARS. Box 3 en valuta meenemen in de planning.",
+      th: "Visa/retirement. Lange toeristenstatus is geen emigratie. Bank en zorg privé.",
+      id: "KITAS/KITAP. Apostille, lokale regels per eiland.",
+      my: "MM2H of werkvisa. Engels breed.",
+      sg: "EP/PR. Streng, duur, efficiënt.",
+      ae: "Visa via sponsor of golden visa. Geen IB zoals NL; wel NL-exit en CA.",
+      tr: "Verblijf via ikamet. Niet-EU.",
+      al: "Niet-EU, wel populair als woonland. Verblijfsvergunning.",
+      me: "Niet-EU. Verblijf via eigendom of werk.",
+      rs: "Niet-EU. Verblijfsvergunning.",
+      ua: "Niet-EU. Situatie ter plaatse checken.",
+      cw: "Land binnen het Koninkrijk. Eigen belastingstelsel, geen EU. Geen ‘emigratie EU’.",
+      aw: "Land binnen het Koninkrijk. Eigen belastingstelsel, geen EU.",
+      sx: "Land binnen het Koninkrijk. Eigen regels, geen EU.",
+      bq: "Caribisch Nederland (BES). Bijzondere fiscale status, geen standaard-emigratie.",
+      sr: "Nederlands veel gesproken. Visa/verblijf, geen EU.",
+    };
+    const eu = [
+      ["at", "Oostenrijk"], ["be", "België"], ["bg", "Bulgarije"], ["hr", "Kroatië"], ["cy", "Cyprus"],
+      ["cz", "Tsjechië"], ["dk", "Denemarken"], ["ee", "Estland"], ["fi", "Finland"], ["fr", "Frankrijk"],
+      ["de", "Duitsland"], ["gr", "Griekenland"], ["hu", "Hongarije"], ["ie", "Ierland"], ["it", "Italië"],
+      ["lv", "Letland"], ["lt", "Litouwen"], ["lu", "Luxemburg"], ["mt", "Malta"], ["pl", "Polen"],
+      ["pt", "Portugal"], ["ro", "Roemenië"], ["sk", "Slowakije"], ["si", "Slovenië"], ["es", "Spanje"],
+      ["se", "Zweden"], ["no", "Noorwegen"], ["is", "IJsland"], ["li", "Liechtenstein"], ["ch", "Zwitserland"],
+    ];
+    const world = [
+      ["af", "Afghanistan"], ["al", "Albanië"], ["dz", "Algerije"], ["ad", "Andorra"], ["ao", "Angola"],
+      ["ag", "Antigua en Barbuda"], ["ar", "Argentinië"], ["am", "Armenië"], ["aw", "Aruba"],
+      ["au", "Australië"], ["az", "Azerbeidzjan"], ["bs", "Bahama’s"], ["bh", "Bahrein"], ["bd", "Bangladesh"],
+      ["bb", "Barbados"], ["by", "Belarus"], ["bz", "Belize"], ["bj", "Benin"], ["bt", "Bhutan"],
+      ["bo", "Bolivia"], ["ba", "Bosnië en Herzegovina"], ["bw", "Botswana"], ["br", "Brazilië"],
+      ["bn", "Brunei"], ["bf", "Burkina Faso"], ["bi", "Burundi"], ["kh", "Cambodja"], ["cm", "Kameroen"],
+      ["ca", "Canada"], ["cv", "Kaapverdië"], ["bq", "Caribisch Nederland"], ["cf", "Centraal-Afrikaanse Republiek"],
+      ["td", "Tsjaad"], ["cl", "Chili"], ["cn", "China"], ["co", "Colombia"], ["km", "Comoren"],
+      ["cg", "Congo-Brazzaville"], ["cd", "Congo-Kinshasa"], ["cr", "Costa Rica"], ["cu", "Cuba"],
+      ["cw", "Curaçao"], ["dj", "Djibouti"], ["dm", "Dominica"], ["do", "Dominicaanse Republiek"],
+      ["ec", "Ecuador"], ["eg", "Egypte"], ["sv", "El Salvador"], ["gq", "Equatoriaal-Guinea"],
+      ["er", "Eritrea"], ["sz", "Eswatini"], ["et", "Ethiopië"], ["fj", "Fiji"], ["ga", "Gabon"],
+      ["gm", "Gambia"], ["ge", "Georgië"], ["gh", "Ghana"], ["gd", "Grenada"], ["gt", "Guatemala"],
+      ["gn", "Guinee"], ["gw", "Guinee-Bissau"], ["gy", "Guyana"], ["ht", "Haïti"], ["hn", "Honduras"],
+      ["hk", "Hongkong"], ["in", "India"], ["id", "Indonesië"], ["iq", "Irak"], ["ir", "Iran"],
+      ["il", "Israël"], ["ci", "Ivoorkust"], ["jm", "Jamaica"], ["jp", "Japan"], ["ye", "Jemen"],
+      ["jo", "Jordanië"], ["kz", "Kazachstan"], ["ke", "Kenia"], ["kg", "Kirgizië"], ["ki", "Kiribati"],
+      ["kw", "Koeweit"], ["xk", "Kosovo"], ["hrx", ""], ["la", "Laos"], ["ls", "Lesotho"],
+      ["lb", "Libanon"], ["lr", "Liberia"], ["ly", "Libië"], ["mo", "Macau"], ["mg", "Madagaskar"],
+      ["mw", "Malawi"], ["mv", "Maldiven"], ["my", "Maleisië"], ["ml", "Mali"], ["ma", "Marokko"],
+      ["mh", "Marshalleilanden"], ["mr", "Mauritanië"], ["mu", "Mauritius"], ["mx", "Mexico"],
+      ["fm", "Micronesië"], ["md", "Moldavië"], ["mc", "Monaco"], ["mn", "Mongolië"], ["me", "Montenegro"],
+      ["mz", "Mozambique"], ["mm", "Myanmar"], ["na", "Namibië"], ["nr", "Nauru"], ["np", "Nepal"],
+      ["ni", "Nicaragua"], ["ne", "Niger"], ["ng", "Nigeria"], ["kp", "Noord-Korea"], ["mk", "Noord-Macedonië"],
+      ["nz", "Nieuw-Zeeland"], ["om", "Oman"], ["ug", "Oeganda"], ["ua", "Oekraïne"], ["uz", "Oezbekistan"],
+      ["pw", "Palau"], ["ps", "Palestijnse gebieden"], ["pa", "Panama"], ["pg", "Papoea-Nieuw-Guinea"],
+      ["py", "Paraguay"], ["pe", "Peru"], ["ph", "Filipijnen"], ["qa", "Qatar"], ["ru", "Rusland"],
+      ["rw", "Rwanda"], ["sb", "Salomonseilanden"], ["ws", "Samoa"], ["sm", "San Marino"],
+      ["st", "Sao Tomé en Principe"], ["sa", "Saoedi-Arabië"], ["sn", "Senegal"], ["rs", "Servië"],
+      ["sc", "Seychellen"], ["sl", "Sierra Leone"], ["sg", "Singapore"], ["sx", "Sint Maarten"],
+      ["lc", "Saint Lucia"], ["kn", "Saint Kitts en Nevis"], ["vc", "Saint Vincent en de Grenadines"],
+      ["so", "Somalië"], ["lk", "Sri Lanka"], ["sd", "Soedan"], ["ss", "Zuid-Soedan"], ["sr", "Suriname"],
+      ["sy", "Syrië"], ["tj", "Tadzjikistan"], ["tw", "Taiwan"], ["tz", "Tanzania"], ["th", "Thailand"],
+      ["tl", "Oost-Timor"], ["tg", "Togo"], ["to", "Tonga"], ["tt", "Trinidad en Tobago"], ["tn", "Tunesië"],
+      ["tr", "Turkije"], ["tm", "Turkmenistan"], ["tv", "Tuvalu"], ["uy", "Uruguay"], ["vu", "Vanuatu"],
+      ["va", "Vaticaanstad"], ["ve", "Venezuela"], ["ae", "Verenigde Arabische Emiraten"],
+      ["gb", "Verenigd Koninkrijk"], ["us", "Verenigde Staten"], ["vn", "Vietnam"], ["zm", "Zambia"],
+      ["zw", "Zimbabwe"], ["za", "Zuid-Afrika"], ["kr", "Zuid-Korea"],
+    ];
+    const out = {
+      eu: { id: "eu", name: "Ander EU-/EER-land", region: "eu", group: "eu", notes: euNote },
+      world: { id: "world", name: "Ander land buiten de EU", region: "world", group: "world", notes: worldNote },
+    };
+    eu.forEach(([id, name]) => {
+      if (!name) return;
+      out[id] = { id, name, region: "eu", group: "eu", notes: extra[id] || euNote };
+    });
+    world.forEach(([id, name]) => {
+      if (!name || id === "hrx") return;
+      out[id] = { id, name, region: "world", group: "world", notes: extra[id] || worldNote };
+    });
+    return out;
+  })(),
 
   phases: [
     {

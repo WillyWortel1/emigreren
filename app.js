@@ -59,6 +59,21 @@
     return EMIGREER_DATA.destinations[state.profile.bestemming] || EMIGREER_DATA.destinations.eu;
   }
 
+  function destOptions() {
+    const all = Object.values(EMIGREER_DATA.destinations);
+    const pick = (group) =>
+      all
+        .filter((d) => d.group === group && d.id !== "eu" && d.id !== "world")
+        .sort((a, b) => a.name.localeCompare(b.name, "nl"))
+        .map((d) => `<option value="${d.id}" ${state.profile.bestemming === d.id ? "selected" : ""}>${d.name}</option>`)
+        .join("");
+    const generic = (id) => {
+      const d = EMIGREER_DATA.destinations[id];
+      return `<option value="${d.id}" ${state.profile.bestemming === d.id ? "selected" : ""}>${d.name}</option>`;
+    };
+    return `<optgroup label="EU, EER en Zwitserland">${pick("eu")}${generic("eu")}</optgroup><optgroup label="Buiten de EU">${pick("world")}${generic("world")}</optgroup>`;
+  }
+
   function visibleTasks() {
     const d = dest();
     return EMIGREER_DATA.tasks.filter((t) => {
@@ -171,9 +186,7 @@
         ${field("telefoon", "Telefoon", "tel")}
         ${field("datum", "Vertrekdatum", "date")}
         <label class="field">Bestemming</label>
-        <select id="bestemming">${Object.values(EMIGREER_DATA.destinations)
-          .map((d) => `<option value="${d.id}" ${state.profile.bestemming === d.id ? "selected" : ""}>${d.name}</option>`)
-          .join("")}</select>
+        <select id="bestemming" class="dest-select" size="22">${destOptions()}</select>
         ${field("adres_nl", "Adres in Nederland", "text")}
         ${field("adres_buitenland", "Adres / postadres buitenland", "text")}
         ${field("bsn", "BSN (alleen lokaal op dit apparaat)", "text")}

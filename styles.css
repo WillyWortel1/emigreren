@@ -199,7 +199,11 @@ input[type="text"], input[type="date"], input[type="email"], input[type="tel"], 
   color: var(--fg);
   box-shadow: var(--shadow);
 }
-textarea { min-height: 88px; resize: vertical; }
+select.dest-select {
+  min-height: 28rem;
+  height: min(70vh, 40rem);
+  padding: 6px;
+}
 .checks {
   display: flex;
   flex-wrap: wrap;
