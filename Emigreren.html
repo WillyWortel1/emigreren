@@ -178,7 +178,8 @@ nav.tabs .tab-reset {
   font-weight: 700;
   color: var(--fg);
 }
-nav.tabs .tab-icon {
+nav.tabs .tab-icon,
+nav.tabs .icon-btn {
   width: 34px;
   height: 34px;
   padding: 0;
@@ -439,6 +440,30 @@ table.grid th {
   .progress-bar { display: none; }
 }
 
+.person-form {
+  display: grid;
+  grid-template-columns: 1.4fr 0.9fr auto;
+  gap: 8px;
+  margin: 16px 0 8px;
+}
+.circle { margin-top: 18px; }
+.circle h3 { margin: 0 0 4px; font-size: 1rem; }
+.person {
+  display: grid;
+  grid-template-columns: 92px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.person label { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--fg-muted); }
+.person-actions { display: flex; gap: 6px; }
+.person.told strong { color: var(--fg-muted); text-decoration: line-through; }
+@media (max-width: 700px) {
+  .person-form, .person { grid-template-columns: 1fr; }
+}
+#media-form { grid-template-columns: 1fr auto; margin-top: 16px; }
+
 </style>
     <script>
       try {
@@ -467,14 +492,6 @@ table.grid th {
             <div id="progress-label">—</div>
             <div class="progress-bar"><span></span></div>
           </div>
-          <button class="icon-btn" id="theme-toggle" type="button" aria-label="Thema">
-            <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
-              <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
-            </svg>
-            <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" style="display:none">
-              <path d="M21 14.3A8.5 8.5 0 1 1 9.7 3a7 7 0 0 0 11.3 11.3z"/>
-            </svg>
-          </button>
         </div>
       </div>
       <nav class="tabs">
@@ -482,6 +499,7 @@ table.grid th {
         <button data-tab="lijst">Afvinklijst</button>
         <button data-tab="fiscaal">Fiscaal</button>
         <button data-tab="mail">E-maillijst</button>
+        <button data-tab="sociaal">Sociaal</button>
         <button data-tab="info">Spelregels</button>
         <span class="tab-actions">
           <button class="tab-icon" id="reload-app" type="button" title="Vernieuwen" aria-label="Vernieuwen">
@@ -491,6 +509,14 @@ table.grid th {
             </svg>
           </button>
           <button class="tab-reset" id="reset-data" type="button">Wissen</button>
+          <button class="icon-btn" id="theme-toggle" type="button" aria-label="Thema">
+            <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
+              <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>
+            </svg>
+            <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" style="display:none">
+              <path d="M21 14.3A8.5 8.5 0 1 1 9.7 3a7 7 0 0 0 11.3 11.3z"/>
+            </svg>
+          </button>
         </span>
       </nav>
     </header>
@@ -1104,6 +1130,41 @@ window.EMIGREER_DATA = {
       title: "RNI-adres jaarlijks controleren",
       why: "Verouderd adres = kwijtgeraakte post van Belastingdienst en SVB.",
     },
+    {
+      id: "kring-lijst",
+      phase: "voorbereiden",
+      cat: "sociaal",
+      title: "Lijst: familie, vrienden, kennissen, werk en buren",
+      why: "Niet iedereen hoeft het op dezelfde dag te horen. Zet namen in het tabblad Sociaal, van binnenste kring naar buiten.",
+    },
+    {
+      id: "kring-persoonlijk",
+      phase: "voorbereiden",
+      cat: "sociaal",
+      title: "Binnenste kring persoonlijk vertellen",
+      why: "Partner, kinderen, ouders en naaste vrienden horen het van jou, niet via een groepsapp.",
+    },
+    {
+      id: "kring-breed",
+      phase: "afronden",
+      cat: "sociaal",
+      title: "Kennissen, clubs, school, sport en buren informeren",
+      why: "Verenigingen en scholen hebben een einddatum nodig. Buren alleen het praktische: post, sleutel, planten.",
+    },
+    {
+      id: "kring-adres",
+      phase: "aankomst",
+      cat: "sociaal",
+      title: "Nieuw adres en bereikbaarheid delen met wie het moet weten",
+      why: "Niet de hele lijst. Alleen wie langskomt, post doorstuurt of je in nood moet kunnen vinden.",
+    },
+    {
+      id: "media-profiel",
+      phase: "afronden",
+      cat: "sociaal",
+      title: "Social media: locatie, bio en oude adressen nalopen",
+      why: "Een check-in of een foto van je huis is ook een spoor. Haal weg wat je niet meer wilt delen, vóór je het vertrek online zet.",
+    },
   ],
 
   emails: [
@@ -1346,6 +1407,32 @@ Hvala,
 {{email}}
 {{telefoon}}`,
     },
+    {
+      id: "kring",
+      title: "Kring — kort bericht over het vertrek",
+      toHint: "Familie, vrienden of kennissen. Pas de toon aan.",
+      subject: "We vertrekken per {{datum}} naar {{bestemming}}",
+      body: `Hoi,
+
+Per {{datum}} verhuis ik naar {{bestemming}}.
+
+Nieuw adres, zodra het vaststaat:
+{{adres_buitenland}}
+
+Bereikbaar via {{telefoon}} en {{email}}.
+
+Groet,
+{{naam}}`,
+    },
+    {
+      id: "media",
+      title: "Social media — kort vertrekbericht",
+      toHint: "Alleen plaatsen als je dat wilt. Niet verplicht.",
+      subject: "Per {{datum}} woon ik in {{bestemming}}",
+      body: `Per {{datum}} woon ik in {{bestemming}}.
+
+Nieuw adres deel ik apart, met wie het nodig heeft.`,
+    },
   ],
 };
 
@@ -1520,6 +1607,9 @@ Met vriendelijke groet,
     filterPhase: "all",
     filterCat: "all",
     ties: {},
+    people: [],
+    media: {},
+    mediaExtra: [],
   });
 
   let state = load();
@@ -1539,6 +1629,9 @@ Met vriendelijke groet,
           flags: { ...base.profile.flags, ...((parsed.profile && parsed.profile.flags) || {}) },
         },
         ties: { ...base.ties, ...(parsed.ties || {}) },
+        people: Array.isArray(parsed.people) ? parsed.people : [],
+        media: { ...(parsed.media || {}) },
+        mediaExtra: Array.isArray(parsed.mediaExtra) ? parsed.mediaExtra : [],
       };
     } catch {
       return base;
@@ -1729,7 +1822,7 @@ Met vriendelijke groet,
         return `<button class="chip ${state.filterPhase === id ? "on" : ""}" data-phase="${id}">${label}</button>`;
       })
       .join("");
-    const catChips = ["all", "administratief", "financieel", "praktisch"]
+    const catChips = ["all", "administratief", "financieel", "praktisch", "sociaal"]
       .map((id) => `<button class="chip ${state.filterCat === id ? "on" : ""}" data-cat="${id}">${id === "all" ? "Alle soorten" : id}</button>`)
       .join("");
     const items = tasks
@@ -1942,6 +2035,7 @@ Met vriendelijke groet,
       if (state.tab === "lijst") root.innerHTML = renderList();
       if (state.tab === "fiscaal") root.innerHTML = renderFiscal();
       if (state.tab === "mail") root.innerHTML = renderMail();
+      if (state.tab === "sociaal") root.innerHTML = renderSocial();
       if (state.tab === "info") root.innerHTML = renderInfo();
       bind();
     } catch (err) {
@@ -1954,6 +2048,15 @@ Met vriendelijke groet,
   function bind() {
     $$("nav.tabs [data-tab]").forEach((b) => (b.onclick = () => setTab(b.dataset.tab)));
     $$("[data-go]").forEach((b) => (b.onclick = () => setTab(b.dataset.go)));
+    $$("[data-go-social]").forEach((b) => {
+      b.onclick = () => {
+        state.tab = "lijst";
+        state.filterPhase = "all";
+        state.filterCat = "sociaal";
+        save();
+        render();
+      };
+    });
     $$("[data-profile]").forEach((el) => {
       el.addEventListener("change", () => {
         state.profile[el.dataset.profile] = el.value;
@@ -2038,6 +2141,170 @@ Met vriendelijke groet,
         setTimeout(() => (el.textContent = "Kopieer tekst"), 1500);
       };
     });
+    const personForm = $("#person-form");
+    if (personForm) {
+      personForm.onsubmit = (e) => {
+        e.preventDefault();
+        const data = new FormData(personForm);
+        const name = String(data.get("name") || "").trim();
+        if (!name) return;
+        state.people.push({
+          id: String(Date.now()),
+          name,
+          circle: String(data.get("circle") || "vrienden"),
+          told: false,
+        });
+        save();
+        render();
+      };
+    }
+    $$("[data-person-told]").forEach((el) => {
+      el.onchange = () => {
+        const person = state.people.find((p) => p.id === el.dataset.personTold);
+        if (!person) return;
+        person.told = el.checked;
+        save();
+        render();
+      };
+    });
+    $$("[data-person-del]").forEach((el) => {
+      el.onclick = () => {
+        state.people = state.people.filter((p) => p.id !== el.dataset.personDel);
+        save();
+        render();
+      };
+    });
+    $$("[data-copy-person]").forEach((el) => {
+      el.onclick = async () => {
+        const person = state.people.find((p) => p.id === el.dataset.copyPerson);
+        if (!person) return;
+        const mail = EMIGREER_DATA.emails.find((m) => m.id === "kring");
+        const body = fillTemplate(mail.body).replace(/^Hoi,/, "Hoi " + person.name + ",");
+        await navigator.clipboard.writeText(body);
+        el.textContent = "Gekopieerd";
+        setTimeout(() => (el.textContent = "Bericht"), 1500);
+      };
+    });
+    $$("[data-media]").forEach((el) => {
+      el.onchange = () => {
+        state.media[el.dataset.media] = el.checked;
+        save();
+        render();
+      };
+    });
+    const mediaForm = $("#media-form");
+    if (mediaForm) {
+      mediaForm.onsubmit = (e) => {
+        e.preventDefault();
+        const name = String(new FormData(mediaForm).get("name") || "").trim();
+        if (!name) return;
+        state.mediaExtra.push({ id: "x" + Date.now(), name });
+        save();
+        render();
+      };
+    }
+    $$("[data-media-del]").forEach((el) => {
+      el.onclick = () => {
+        const id = el.dataset.mediaDel;
+        state.mediaExtra = state.mediaExtra.filter((m) => m.id !== id);
+        delete state.media[id];
+        save();
+        render();
+      };
+    });
+  }
+
+  const CIRCLES = [
+    ["familie", "Familie"],
+    ["vrienden", "Vrienden"],
+    ["kennissen", "Kennissen"],
+    ["werk", "Werk"],
+    ["buren", "Buren"],
+  ];
+
+  const MEDIA = [
+    ["whatsapp", "WhatsApp", "Status, groepen, nieuw nummer."],
+    ["signal", "Signal", "Zelfde kring, ander kanaal."],
+    ["facebook", "Facebook", "Woonplaats, check-ins, foto's van je oude adres."],
+    ["instagram", "Instagram", "Bio en locatie-tags."],
+    ["x", "X", "Bio en locatie. Een bericht is niet verplicht."],
+    ["linkedin", "LinkedIn", "Locatie alleen als je die openbaar wilt."],
+    ["youtube", "YouTube", "Land van het kanaal, als je er een hebt."],
+    ["tiktok", "TikTok", "Bio en locatie."],
+  ];
+
+  function mediaRows(list, extra) {
+    return list
+      .map(([id, name, hint]) => {
+        const on = !!state.media[id];
+        return `<div class="person ${on ? "told" : ""}">
+          <label><input type="checkbox" data-media="${escapeAttr(id)}" ${on ? "checked" : ""}> klaar</label>
+          <div><strong>${escapeHtml(name)}</strong><div class="tiny">${hint}</div></div>
+          ${extra ? `<button type="button" class="btn ghost small" data-media-del="${escapeAttr(id)}">Weg</button>` : "<span></span>"}
+        </div>`;
+      })
+      .join("");
+  }
+
+  function renderSocial() {
+    const told = state.people.filter((p) => p.told).length;
+    const options = CIRCLES.map(([id, label]) => `<option value="${id}">${label}</option>`).join("");
+    const groups = CIRCLES.map(([id, label]) => {
+      const rows = state.people.filter((p) => p.circle === id);
+      const items = rows
+        .map(
+          (p) => `<div class="person ${p.told ? "told" : ""}">
+            <label><input type="checkbox" data-person-told="${escapeAttr(p.id)}" ${p.told ? "checked" : ""}> verteld</label>
+            <strong>${escapeHtml(p.name)}</strong>
+            <span class="person-actions">
+              <button type="button" class="btn ghost small" data-copy-person="${escapeAttr(p.id)}">Bericht</button>
+              <button type="button" class="btn ghost small" data-person-del="${escapeAttr(p.id)}">Weg</button>
+            </span>
+          </div>`
+        )
+        .join("");
+      return `<section class="circle">
+        <h3>${label} <span class="tiny">${rows.filter((p) => p.told).length}/${rows.length}</span></h3>
+        ${items || `<p class="muted">Nog niemand.</p>`}
+      </section>`;
+    }).join("");
+    const mail = EMIGREER_DATA.emails.find((m) => m.id === "kring");
+    return `<div class="fiscal-stack">
+      <article class="card">
+        <h2>Wie het moet weten</h2>
+        <p class="muted">${told} van ${state.people.length} verteld. Namen blijven in deze browser. Eerst familie en naaste vrienden, daarna kennissen, werk en buren.</p>
+        <form id="person-form" class="person-form">
+          <input type="text" name="name" placeholder="Naam" required maxlength="80" autocomplete="off">
+          <select name="circle">${options}</select>
+          <button class="btn" type="submit">Toevoegen</button>
+        </form>
+        ${groups}
+      </article>
+      <article class="card">
+        <h2>Bericht</h2>
+        <p class="muted">Zelfde tekst als in de e-maillijst. Per persoon begint hij met hun naam.</p>
+        <div class="preview">${escapeHtml(fillTemplate(mail.body))}</div>
+        <div class="row-actions">
+          <button class="btn" type="button" data-copy="kring">Kopieer tekst</button>
+          <button class="btn ghost" type="button" data-go-social>Sociale taken</button>
+        </div>
+      </article>
+      <article class="card">
+        <h2>Social media</h2>
+        <p class="muted">${Object.values(state.media).filter(Boolean).length} bijgewerkt. Zet locatie en oude adressen uit voordat je een vertrek deelt. Niets hier wordt online gezet.</p>
+        ${mediaRows(MEDIA, false)}
+        ${mediaRows(state.mediaExtra.map((m) => [m.id, m.name, "Zelf toegevoegd."]), true)}
+        <form id="media-form" class="person-form">
+          <input type="text" name="name" placeholder="Ander netwerk" maxlength="40" autocomplete="off">
+          <button class="btn" type="submit">Toevoegen</button>
+        </form>
+        <p class="muted">Kort bericht, als je het wilt delen:</p>
+        <div class="preview">${escapeHtml(fillTemplate("Per {{datum}} woon ik in {{bestemming}}."))}</div>
+        <div class="row-actions">
+          <button class="btn" type="button" data-copy="media">Kopieer bericht</button>
+        </div>
+      </article>
+    </div>`;
   }
 
   function escapeHtml(s) {

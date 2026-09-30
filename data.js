@@ -605,6 +605,41 @@ window.EMIGREER_DATA = {
       title: "RNI-adres jaarlijks controleren",
       why: "Verouderd adres = kwijtgeraakte post van Belastingdienst en SVB.",
     },
+    {
+      id: "kring-lijst",
+      phase: "voorbereiden",
+      cat: "sociaal",
+      title: "Lijst: familie, vrienden, kennissen, werk en buren",
+      why: "Niet iedereen hoeft het op dezelfde dag te horen. Zet namen in het tabblad Sociaal, van binnenste kring naar buiten.",
+    },
+    {
+      id: "kring-persoonlijk",
+      phase: "voorbereiden",
+      cat: "sociaal",
+      title: "Binnenste kring persoonlijk vertellen",
+      why: "Partner, kinderen, ouders en naaste vrienden horen het van jou, niet via een groepsapp.",
+    },
+    {
+      id: "kring-breed",
+      phase: "afronden",
+      cat: "sociaal",
+      title: "Kennissen, clubs, school, sport en buren informeren",
+      why: "Verenigingen en scholen hebben een einddatum nodig. Buren alleen het praktische: post, sleutel, planten.",
+    },
+    {
+      id: "kring-adres",
+      phase: "aankomst",
+      cat: "sociaal",
+      title: "Nieuw adres en bereikbaarheid delen met wie het moet weten",
+      why: "Niet de hele lijst. Alleen wie langskomt, post doorstuurt of je in nood moet kunnen vinden.",
+    },
+    {
+      id: "media-profiel",
+      phase: "afronden",
+      cat: "sociaal",
+      title: "Social media: locatie, bio en oude adressen nalopen",
+      why: "Een check-in of een foto van je huis is ook een spoor. Haal weg wat je niet meer wilt delen, vóór je het vertrek online zet.",
+    },
   ],
 
   emails: [
@@ -846,6 +881,32 @@ Hvala,
 {{naam}}
 {{email}}
 {{telefoon}}`,
+    },
+    {
+      id: "kring",
+      title: "Kring — kort bericht over het vertrek",
+      toHint: "Familie, vrienden of kennissen. Pas de toon aan.",
+      subject: "We vertrekken per {{datum}} naar {{bestemming}}",
+      body: `Hoi,
+
+Per {{datum}} verhuis ik naar {{bestemming}}.
+
+Nieuw adres, zodra het vaststaat:
+{{adres_buitenland}}
+
+Bereikbaar via {{telefoon}} en {{email}}.
+
+Groet,
+{{naam}}`,
+    },
+    {
+      id: "media",
+      title: "Social media — kort vertrekbericht",
+      toHint: "Alleen plaatsen als je dat wilt. Niet verplicht.",
+      subject: "Per {{datum}} woon ik in {{bestemming}}",
+      body: `Per {{datum}} woon ik in {{bestemming}}.
+
+Nieuw adres deel ik apart, met wie het nodig heeft.`,
     },
   ],
 };

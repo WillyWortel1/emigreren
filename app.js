@@ -27,6 +27,9 @@
     filterPhase: "all",
     filterCat: "all",
     ties: {},
+    people: [],
+    media: {},
+    mediaExtra: [],
   });
 
   let state = load();
@@ -46,6 +49,9 @@
           flags: { ...base.profile.flags, ...((parsed.profile && parsed.profile.flags) || {}) },
         },
         ties: { ...base.ties, ...(parsed.ties || {}) },
+        people: Array.isArray(parsed.people) ? parsed.people : [],
+        media: { ...(parsed.media || {}) },
+        mediaExtra: Array.isArray(parsed.mediaExtra) ? parsed.mediaExtra : [],
       };
     } catch {
       return base;
@@ -236,7 +242,7 @@
         return `<button class="chip ${state.filterPhase === id ? "on" : ""}" data-phase="${id}">${label}</button>`;
       })
       .join("");
-    const catChips = ["all", "administratief", "financieel", "praktisch"]
+    const catChips = ["all", "administratief", "financieel", "praktisch", "sociaal"]
       .map((id) => `<button class="chip ${state.filterCat === id ? "on" : ""}" data-cat="${id}">${id === "all" ? "Alle soorten" : id}</button>`)
       .join("");
     const items = tasks
@@ -449,6 +455,7 @@
       if (state.tab === "lijst") root.innerHTML = renderList();
       if (state.tab === "fiscaal") root.innerHTML = renderFiscal();
       if (state.tab === "mail") root.innerHTML = renderMail();
+      if (state.tab === "sociaal") root.innerHTML = renderSocial();
       if (state.tab === "info") root.innerHTML = renderInfo();
       bind();
     } catch (err) {
@@ -461,6 +468,15 @@
   function bind() {
     $$("nav.tabs [data-tab]").forEach((b) => (b.onclick = () => setTab(b.dataset.tab)));
     $$("[data-go]").forEach((b) => (b.onclick = () => setTab(b.dataset.go)));
+    $$("[data-go-social]").forEach((b) => {
+      b.onclick = () => {
+        state.tab = "lijst";
+        state.filterPhase = "all";
+        state.filterCat = "sociaal";
+        save();
+        render();
+      };
+    });
     $$("[data-profile]").forEach((el) => {
       el.addEventListener("change", () => {
         state.profile[el.dataset.profile] = el.value;
@@ -545,6 +561,170 @@
         setTimeout(() => (el.textContent = "Kopieer tekst"), 1500);
       };
     });
+    const personForm = $("#person-form");
+    if (personForm) {
+      personForm.onsubmit = (e) => {
+        e.preventDefault();
+        const data = new FormData(personForm);
+        const name = String(data.get("name") || "").trim();
+        if (!name) return;
+        state.people.push({
+          id: String(Date.now()),
+          name,
+          circle: String(data.get("circle") || "vrienden"),
+          told: false,
+        });
+        save();
+        render();
+      };
+    }
+    $$("[data-person-told]").forEach((el) => {
+      el.onchange = () => {
+        const person = state.people.find((p) => p.id === el.dataset.personTold);
+        if (!person) return;
+        person.told = el.checked;
+        save();
+        render();
+      };
+    });
+    $$("[data-person-del]").forEach((el) => {
+      el.onclick = () => {
+        state.people = state.people.filter((p) => p.id !== el.dataset.personDel);
+        save();
+        render();
+      };
+    });
+    $$("[data-copy-person]").forEach((el) => {
+      el.onclick = async () => {
+        const person = state.people.find((p) => p.id === el.dataset.copyPerson);
+        if (!person) return;
+        const mail = EMIGREER_DATA.emails.find((m) => m.id === "kring");
+        const body = fillTemplate(mail.body).replace(/^Hoi,/, "Hoi " + person.name + ",");
+        await navigator.clipboard.writeText(body);
+        el.textContent = "Gekopieerd";
+        setTimeout(() => (el.textContent = "Bericht"), 1500);
+      };
+    });
+    $$("[data-media]").forEach((el) => {
+      el.onchange = () => {
+        state.media[el.dataset.media] = el.checked;
+        save();
+        render();
+      };
+    });
+    const mediaForm = $("#media-form");
+    if (mediaForm) {
+      mediaForm.onsubmit = (e) => {
+        e.preventDefault();
+        const name = String(new FormData(mediaForm).get("name") || "").trim();
+        if (!name) return;
+        state.mediaExtra.push({ id: "x" + Date.now(), name });
+        save();
+        render();
+      };
+    }
+    $$("[data-media-del]").forEach((el) => {
+      el.onclick = () => {
+        const id = el.dataset.mediaDel;
+        state.mediaExtra = state.mediaExtra.filter((m) => m.id !== id);
+        delete state.media[id];
+        save();
+        render();
+      };
+    });
+  }
+
+  const CIRCLES = [
+    ["familie", "Familie"],
+    ["vrienden", "Vrienden"],
+    ["kennissen", "Kennissen"],
+    ["werk", "Werk"],
+    ["buren", "Buren"],
+  ];
+
+  const MEDIA = [
+    ["whatsapp", "WhatsApp", "Status, groepen, nieuw nummer."],
+    ["signal", "Signal", "Zelfde kring, ander kanaal."],
+    ["facebook", "Facebook", "Woonplaats, check-ins, foto's van je oude adres."],
+    ["instagram", "Instagram", "Bio en locatie-tags."],
+    ["x", "X", "Bio en locatie. Een bericht is niet verplicht."],
+    ["linkedin", "LinkedIn", "Locatie alleen als je die openbaar wilt."],
+    ["youtube", "YouTube", "Land van het kanaal, als je er een hebt."],
+    ["tiktok", "TikTok", "Bio en locatie."],
+  ];
+
+  function mediaRows(list, extra) {
+    return list
+      .map(([id, name, hint]) => {
+        const on = !!state.media[id];
+        return `<div class="person ${on ? "told" : ""}">
+          <label><input type="checkbox" data-media="${escapeAttr(id)}" ${on ? "checked" : ""}> klaar</label>
+          <div><strong>${escapeHtml(name)}</strong><div class="tiny">${hint}</div></div>
+          ${extra ? `<button type="button" class="btn ghost small" data-media-del="${escapeAttr(id)}">Weg</button>` : "<span></span>"}
+        </div>`;
+      })
+      .join("");
+  }
+
+  function renderSocial() {
+    const told = state.people.filter((p) => p.told).length;
+    const options = CIRCLES.map(([id, label]) => `<option value="${id}">${label}</option>`).join("");
+    const groups = CIRCLES.map(([id, label]) => {
+      const rows = state.people.filter((p) => p.circle === id);
+      const items = rows
+        .map(
+          (p) => `<div class="person ${p.told ? "told" : ""}">
+            <label><input type="checkbox" data-person-told="${escapeAttr(p.id)}" ${p.told ? "checked" : ""}> verteld</label>
+            <strong>${escapeHtml(p.name)}</strong>
+            <span class="person-actions">
+              <button type="button" class="btn ghost small" data-copy-person="${escapeAttr(p.id)}">Bericht</button>
+              <button type="button" class="btn ghost small" data-person-del="${escapeAttr(p.id)}">Weg</button>
+            </span>
+          </div>`
+        )
+        .join("");
+      return `<section class="circle">
+        <h3>${label} <span class="tiny">${rows.filter((p) => p.told).length}/${rows.length}</span></h3>
+        ${items || `<p class="muted">Nog niemand.</p>`}
+      </section>`;
+    }).join("");
+    const mail = EMIGREER_DATA.emails.find((m) => m.id === "kring");
+    return `<div class="fiscal-stack">
+      <article class="card">
+        <h2>Wie het moet weten</h2>
+        <p class="muted">${told} van ${state.people.length} verteld. Namen blijven in deze browser. Eerst familie en naaste vrienden, daarna kennissen, werk en buren.</p>
+        <form id="person-form" class="person-form">
+          <input type="text" name="name" placeholder="Naam" required maxlength="80" autocomplete="off">
+          <select name="circle">${options}</select>
+          <button class="btn" type="submit">Toevoegen</button>
+        </form>
+        ${groups}
+      </article>
+      <article class="card">
+        <h2>Bericht</h2>
+        <p class="muted">Zelfde tekst als in de e-maillijst. Per persoon begint hij met hun naam.</p>
+        <div class="preview">${escapeHtml(fillTemplate(mail.body))}</div>
+        <div class="row-actions">
+          <button class="btn" type="button" data-copy="kring">Kopieer tekst</button>
+          <button class="btn ghost" type="button" data-go-social>Sociale taken</button>
+        </div>
+      </article>
+      <article class="card">
+        <h2>Social media</h2>
+        <p class="muted">${Object.values(state.media).filter(Boolean).length} bijgewerkt. Zet locatie en oude adressen uit voordat je een vertrek deelt. Niets hier wordt online gezet.</p>
+        ${mediaRows(MEDIA, false)}
+        ${mediaRows(state.mediaExtra.map((m) => [m.id, m.name, "Zelf toegevoegd."]), true)}
+        <form id="media-form" class="person-form">
+          <input type="text" name="name" placeholder="Ander netwerk" maxlength="40" autocomplete="off">
+          <button class="btn" type="submit">Toevoegen</button>
+        </form>
+        <p class="muted">Kort bericht, als je het wilt delen:</p>
+        <div class="preview">${escapeHtml(fillTemplate("Per {{datum}} woon ik in {{bestemming}}."))}</div>
+        <div class="row-actions">
+          <button class="btn" type="button" data-copy="media">Kopieer bericht</button>
+        </div>
+      </article>
+    </div>`;
   }
 
   function escapeHtml(s) {
