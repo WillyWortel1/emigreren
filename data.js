@@ -415,7 +415,7 @@ window.EMIGREER_DATA = {
       phase: "afronden",
       cat: "praktisch",
       title: "Boot: RDW-registratie, ligplaats en uitvoer",
-      why: "Een snelle RIB met registratienummer staat bij de RDW als (klein) pleziervaartuig. Meenemen: uitvoer of wijziging van de registratie vóór lokale inschrijving, plus casco/WA. Achterlaten: registratie wijzigen of beëindigen. Ligplaats- of stallingcontract opzeggen. Trailer met kenteken apart via de RDW. Uitvoer uit de EU: BTW-status meenemen.",
+      why: "Vaartuigen korter dan 20 meter die harder kunnen dan 20 km/u moeten bij de RDW (registratieteken en registratiebewijs). Meenemen: registratie wijzigen of stoppen vóór lokale inschrijving, plus casco/WA. Achterlaten: registratie wijzigen of beëindigen. Ligplaats- of stallingcontract opzeggen. Een trailer met kenteken loopt apart via de RDW. Uitvoer uit de EU: BTW-status meenemen.",
       links: [
         { label: "RDW — vaartuig registreren", href: "https://www.rdw.nl/vaartuig/kopen-en-verkopen/vaartuig-registreren" },
         { label: "RDW — registratie aanpassen of stoppen", href: "https://www.rdw.nl/vaartuig/registratie-aanpassen" },
@@ -426,7 +426,7 @@ window.EMIGREER_DATA = {
       phase: "afronden",
       cat: "praktisch",
       title: "Trailer: uitvoer bij RDW of schorsen / overschrijven",
-      why: "Een boottrailer heeft een eigen kenteken, los van de RIB. Meenemen: RDW-uitvoer vóór inschrijving in het nieuwe land. Achterlaten: schorsen of overschrijven. Check verzekering en APK-plicht.",
+      why: "Een aanhanger of boottrailer heeft een eigen kenteken, los van het vaartuig. Meenemen: RDW-uitvoer vóór inschrijving in het nieuwe land. Achterlaten: schorsen of overschrijven. Check verzekering en keuringsplicht.",
       links: [
         { label: "Voertuig exporteren — RDW", href: "https://www.rdw.nl/invoeren-exporteren-doorvoeren/voertuig-exporteren" },
       ],
